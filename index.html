@@ -1,0 +1,1835 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SAT Math HQ</title>
+<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Layout: a quiet bento grid of solid tiles on faint graph paper.
+   Colour carries meaning only: each class owns a hue (--c); status owns green / amber / red.
+   Everything else is ink and paper. */
+/* Light by default (soft paper, not glare-white); a dark mode is one tap away.
+   Colour carries meaning only: each class owns a hue (--c); status owns green / amber / red. */
+:root {
+  --bg: #f3f4f6;
+  --surface: #ffffff;
+  --surface-2: #f6f7f9;
+  --surface-3: #eceef2;
+  --line: #e4e6eb;
+  --line-2: #cfd3da;
+  --grid: rgba(30,40,60,.035);
+  --hover: rgba(30,40,60,.04);
+  --track: rgba(30,40,60,.08);
+  --shadow: 0 1px 2px rgba(20,28,45,.05), 0 2px 8px -4px rgba(20,28,45,.06);
+  --fg: #1d2129;
+  --muted: #5d6370;
+  --dim: #8c919c;
+  --accent: #1d2129;
+  --ok: #15803d;
+  --warn: #b45309;
+  --bad: #be123c;
+  --display: 'Outfit', 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --body: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --ease: cubic-bezier(.2,.8,.2,1);
+  color-scheme: light;
+}
+:root[data-mode="dark"] {
+  --bg: #121418;
+  --surface: #1a1d22;
+  --surface-2: #20242a;
+  --surface-3: #2a2f36;
+  --line: rgba(255,255,255,.08);
+  --line-2: rgba(255,255,255,.16);
+  --grid: rgba(255,255,255,.025);
+  --hover: rgba(255,255,255,.045);
+  --track: rgba(255,255,255,.09);
+  --shadow: none;
+  --fg: #ececef;
+  --muted: #a3a7b0;
+  --dim: #6f747e;
+  --accent: #ececef;
+  --ok: #4ade80;
+  --warn: #fbbf24;
+  --bad: #fb7185;
+  color-scheme: dark;
+}
+html { background: var(--bg); }
+body { margin: 0; color: var(--fg); font-family: var(--body); -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; font-variant-numeric: tabular-nums;
+  background-color: var(--bg);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 28px 28px; }
+button { cursor: pointer; }
+*:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+.display { font-family: var(--display); letter-spacing: -.015em; text-wrap: balance; }
+.muted { color: var(--muted); } .dim { color: var(--dim); } .c { color: var(--c); }
+.no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { scrollbar-width: none; }
+summary::-webkit-details-marker { display: none; }
+#app { position: relative; }
+
+/* Surfaces */
+.glass { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); }
+.glass .glass { box-shadow: none; }
+.glass .glass { background: var(--surface-2); }
+.tile { position: relative; padding: 20px; overflow: hidden; min-width: 0; transition: transform .25s var(--ease), border-color .2s, background .2s; }
+.tile:hover { border-color: var(--line-2); }
+.tile.lift:hover { transform: translateY(-2px); background: var(--surface-2); }
+.glass .tile.lift:hover { background: var(--surface-3); }
+.tile.lift:active { transform: scale(.99); }
+.tile > * { position: relative; }
+.orb { display: none !important; }
+.inner { background: var(--surface-2); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
+.eyebrow { font-size: 12.5px; font-weight: 600; color: var(--dim); }
+.tile-title { font-family: var(--display); font-size: 17px; font-weight: 700; letter-spacing: -.01em; color: var(--fg); }
+.big-num { font-family: var(--display); font-weight: 700; font-size: 44px; line-height: 1; letter-spacing: -.03em; }
+.glow-text { color: var(--c); }
+.dot { width: 9px; height: 9px; border-radius: 999px; background: var(--c); flex: none; }
+.pulse { box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 22%, transparent); }
+.hair { border-top: 1px solid var(--line); }
+.logo { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; font-family: var(--display); font-weight: 800; font-size: 20px; color: var(--bg); background: var(--fg); flex: none; }
+.logo.sm { width: 32px; height: 32px; border-radius: 10px; font-size: 16px; }
+
+/* Buttons */
+.btn { --c: var(--fg); display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 16px; border-radius: 12px; font-weight: 600; font-size: 14px; color: var(--fg); background: var(--surface-2); border: 1px solid var(--line); transition: transform .15s var(--ease), background .15s, border-color .15s, color .15s; white-space: nowrap; }
+.btn:hover { background: var(--surface-3); border-color: var(--line-2); }
+.btn:active { transform: scale(.96); }
+.btn.sm { height: 38px; padding: 0 12px; border-radius: 10px; font-size: 13px; }
+.btn.lg { height: 50px; padding: 0 20px; border-radius: 14px; font-size: 15px; }
+.btn-primary { background: var(--fg); border-color: transparent; color: var(--bg); }
+.btn-primary:hover { background: #fff; border-color: transparent; }
+.btn-c { background: color-mix(in srgb, var(--c) 16%, var(--surface)); border-color: color-mix(in srgb, var(--c) 32%, transparent); color: var(--fg); }
+.btn-c:hover { background: color-mix(in srgb, var(--c) 26%, var(--surface)); border-color: color-mix(in srgb, var(--c) 55%, transparent); }
+.btn-ghost { background: transparent; border-color: transparent; color: var(--muted); }
+.btn-ghost:hover { color: var(--fg); background: var(--surface-2); border-color: transparent; }
+.btn-dashed { background: transparent; border: 1.5px dashed var(--line-2); color: var(--muted); }
+.btn-dashed:hover { color: var(--fg); border-color: color-mix(in srgb, var(--fg) 40%, transparent); background: var(--surface); }
+.btn-danger { background: transparent; border-color: transparent; color: var(--bad); }
+.btn-danger:hover { background: color-mix(in srgb, var(--bad) 12%, transparent); border-color: transparent; }
+.icon-btn { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; color: var(--muted); flex: none; transition: transform .15s var(--ease), background .15s, color .15s; }
+.icon-btn:hover { background: var(--surface-3); color: var(--fg); }
+.icon-btn:active { transform: scale(.88); }
+.icon-btn:disabled { opacity: .22; pointer-events: none; }
+.icon-btn.sm { width: 34px; height: 34px; border-radius: 9px; }
+.icon-btn.ok:hover { color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, transparent); }
+
+/* Status pills: the one-click toggles */
+.pill { --s: var(--muted); display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 15px 0 12px; border-radius: 999px; font-weight: 700; font-size: 13.5px; color: var(--s); background: color-mix(in srgb, var(--s) 12%, transparent); border: 1px solid color-mix(in srgb, var(--s) 30%, transparent); transition: transform .18s var(--ease), background .2s; flex: none; }
+.pill .pd { width: 8px; height: 8px; border-radius: 999px; background: var(--s); }
+button.pill:hover { transform: translateY(-1px); background: color-mix(in srgb, var(--s) 20%, transparent); }
+button.pill:active { transform: scale(.93); }
+.pill.sm { height: 30px; padding: 0 10px; font-size: 12px; gap: 6px; }
+.pill.xs { height: 26px; padding: 0 9px; font-size: 11.5px; gap: 6px; }
+.pill.cell { height: 34px; min-width: 56px; padding: 0 10px; justify-content: center; font-size: 12.5px; }
+.s-missing { --s: var(--bad); } .s-submitted { --s: var(--warn); } .s-graded { --s: var(--ok); }
+.status-btn { width: 132px; justify-content: flex-start; }
+.pop { animation: pop .45s var(--ease); }
+@keyframes pop { 0% { transform: scale(1); } 35% { transform: scale(1.12); } 65% { transform: scale(.96); } 100% { transform: scale(1); } }
+
+/* Custom checkboxes */
+.check { --c: var(--fg); width: 28px; height: 28px; border-radius: 8px; border: 2px solid var(--line-2); display: grid; place-items: center; flex: none; transition: background .2s, border-color .2s, transform .2s var(--ease); }
+.check svg { width: 17px; height: 17px; stroke: var(--bg); stroke-width: 3.4; fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 26; stroke-dashoffset: 26; }
+.check.on { background: var(--c); border-color: var(--c); }
+.check.on svg { stroke-dashoffset: 0; }
+.check.fresh { animation: pop .45s var(--ease); }
+.check.fresh svg { animation: draw .4s var(--ease) .05s backwards; }
+@keyframes draw { from { stroke-dashoffset: 26; } to { stroke-dashoffset: 0; } }
+.item:hover .check:not(.on) { border-color: var(--c); }
+
+/* Rows */
+.row { border-radius: 12px; transition: background .15s, transform .2s var(--ease); }
+.row:hover { background: var(--hover); }
+.row.shift:hover { transform: translateX(2px); }
+.is-done { opacity: .45; }
+.tag { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 6px; font-size: 10.5px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; flex: none; }
+.tag-now { color: var(--surface); background: var(--ok); }
+.tag-next { color: var(--bg); background: var(--fg); }
+.tag-done { color: var(--muted); background: var(--surface-3); }
+.tag-c { color: var(--bg); background: var(--c); }
+
+/* Inputs */
+.inp { width: 100%; height: 46px; padding: 0 14px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--line); color: var(--fg); font: inherit; font-size: 16px; outline: none; transition: border-color .15s, box-shadow .15s; }
+.inp::placeholder { color: var(--dim); }
+.inp:hover { border-color: var(--line-2); }
+.inp:focus { border-color: color-mix(in srgb, var(--fg) 45%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--fg) 10%, transparent); }
+.inp.sm { height: 40px; border-radius: 10px; }
+select.inp { appearance: none; -webkit-appearance: none; padding-right: 40px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a3a7b0' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+select.inp option { background: var(--surface-2); color: var(--fg); }
+.score { --c: var(--fg); width: 76px; height: 44px; text-align: center; font-family: var(--display); font-weight: 700; font-size: 18px; padding: 0 6px; }
+.score:focus { border-color: var(--c); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 22%, transparent); }
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; }
+.label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 700; color: var(--muted); }
+
+/* Segmented radios, chips, swatches */
+.seg { display: flex; flex-wrap: wrap; gap: 8px; }
+.seg label { position: relative; cursor: pointer; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg span { display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 14px; border-radius: 11px; border: 1px solid var(--line); background: var(--surface-2); font-weight: 600; font-size: 14px; color: var(--muted); transition: all .15s var(--ease); }
+.seg label:hover span { border-color: var(--line-2); color: var(--fg); }
+.seg input:checked + span { color: var(--fg); border-color: color-mix(in srgb, var(--c, var(--fg)) 55%, transparent); background: color-mix(in srgb, var(--c, var(--fg)) 16%, var(--surface)); }
+.seg input:focus-visible + span { outline: 2px solid var(--fg); outline-offset: 2px; }
+.seg.days span { width: 46px; justify-content: center; padding: 0; }
+.seg.swatches span { width: 40px; height: 40px; padding: 0; border-radius: 999px; background: var(--c); border: 0; }
+.seg.swatches input:checked + span { box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--c); background: var(--c); }
+.chip { --c: var(--fg); display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 15px; border-radius: 999px; font-weight: 600; font-size: 14px; color: var(--muted); background: var(--surface); border: 1px solid var(--line); transition: all .15s var(--ease); flex: none; }
+.chip:hover { color: var(--fg); border-color: var(--line-2); }
+.chip:active { transform: scale(.96); }
+.chip.on { color: var(--fg); background: color-mix(in srgb, var(--c) 16%, var(--surface)); border-color: color-mix(in srgb, var(--c) 45%, transparent); }
+.tabs { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; padding: 4px; border-radius: 16px; }
+.tabs button { height: 42px; border-radius: 12px; font-weight: 600; font-size: 14px; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .15s var(--ease); }
+.tabs button:hover { color: var(--fg); }
+.tabs button.on { background: var(--surface-3); color: var(--fg); }
+
+/* Progress */
+.bar { height: 6px; border-radius: 999px; background: var(--track); overflow: hidden; }
+.bar > i { display: block; height: 100%; border-radius: inherit; background: var(--c); transition: width .7s var(--ease); }
+.pring circle { fill: none; }
+.pring .bg { stroke: var(--track); }
+.pring .fg { stroke: var(--c); stroke-linecap: round; transition: stroke-dashoffset .8s var(--ease); }
+.ring-wrap { position: relative; display: grid; place-items: center; flex: none; }
+.ring-wrap > span { position: absolute; font-family: var(--display); font-weight: 700; }
+.avatar { --c: var(--fg); width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; font-weight: 700; font-size: 13px; color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); flex: none; }
+.sc-ok { color: var(--ok); } .sc-warn { color: var(--warn); } .sc-bad { color: var(--bad); }
+
+/* Bento grid (Today) */
+.bento { display: grid; gap: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.bento > * { grid-column: span 2; }
+@media (min-width: 768px) {
+  .bento > .b-miss, .bento > .b-prog { grid-column: span 1; }
+}
+@media (min-width: 1180px) {
+  .bento { grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-flow: dense; }
+  .bento > .b-hero { grid-column: 1 / span 7; }
+  .bento > .b-grade { grid-column: 8 / span 5; grid-row: span 2; }
+  .bento > .b-time { grid-column: 1 / span 7; }
+  .bento > .b-miss, .bento > .b-prog, .bento > .b-backup { grid-column: span 4; }
+  .bento > .b-week { grid-column: span 12; }
+}
+
+/* Timetable */
+.slot { --c: var(--fg); display: block; width: 100%; text-align: left; padding: 10px 12px; border-radius: 12px; background: color-mix(in srgb, var(--c) 12%, transparent); border: 1px solid color-mix(in srgb, var(--c) 22%, transparent); transition: transform .2s var(--ease), background .15s; }
+.slot:hover { transform: translateY(-1px); background: color-mix(in srgb, var(--c) 19%, transparent); }
+.slot:active { transform: scale(.97); }
+.is-today { border-color: color-mix(in srgb, var(--fg) 38%, transparent) !important; }
+
+/* Navigation */
+.nav-item { display: flex; align-items: center; gap: 12px; width: 100%; height: 46px; padding: 0 14px; border-radius: 12px; font-weight: 600; font-size: 14.5px; color: var(--muted); transition: all .15s var(--ease); }
+.nav-item:hover { color: var(--fg); background: var(--surface-2); }
+.nav-item.on { color: var(--fg); background: var(--surface-3); }
+.badge { min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; display: grid; place-items: center; font-size: 11px; font-weight: 800; color: #3a2a00; background: #fbbf24; }
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); background: color-mix(in srgb, var(--bg) 86%, transparent); border-bottom: 1px solid var(--line); }
+.dock { border: 1px solid var(--line); position: fixed; left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; padding: 6px; border-radius: 22px; background: color-mix(in srgb, var(--surface) 94%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 12px 30px -12px rgba(0,0,0,.7); }
+.dock button { position: relative; height: 56px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 10.5px; font-weight: 700; color: var(--dim); transition: all .15s var(--ease); }
+.dock button:active { transform: scale(.92); }
+.dock button.on { color: var(--fg); background: var(--surface-3); }
+@media (min-width: 1024px) { .dock { display: none; } }
+.dock .badge { position: absolute; top: 4px; right: 12%; min-width: 18px; height: 18px; font-size: 10px; }
+.sync { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 700; flex: none; }
+.sync-ok { color: var(--ok); background: color-mix(in srgb, var(--ok) 10%, transparent); }
+.sync-ok i { width: 6px; height: 6px; border-radius: 9px; background: var(--ok); }
+.sync-busy { color: var(--muted); background: var(--surface-2); }
+.sync-warn { color: var(--warn); background: color-mix(in srgb, var(--warn) 12%, transparent); }
+.sync-bad { color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, transparent); }
+
+/* Sheets, dialogs, toast */
+.scrim { position: fixed; inset: 0; z-index: 50; display: flex; align-items: flex-end; justify-content: center; background: rgba(15,20,30,.4); animation: fade .15s ease; }
+.scrim.top { z-index: 70; }
+.sheet { width: 100%; max-width: 470px; max-height: 92vh; max-height: 92dvh; overflow-y: auto; padding: 22px 22px calc(22px + env(safe-area-inset-bottom, 0px)); background: var(--surface); border: 1px solid var(--line); border-radius: 22px 22px 0 0; box-shadow: 0 24px 60px -20px rgba(10,15,25,.45); animation: rise .3s var(--ease); }
+@media (min-width: 640px) { .scrim { align-items: center; padding: 16px; } .sheet { border-radius: 24px; padding-bottom: 22px; } }
+.toast { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); z-index: 90; max-width: 90vw; padding: 11px 18px; border-radius: 12px; font-size: 14px; font-weight: 600; color: var(--bg); background: var(--fg); box-shadow: 0 12px 30px -10px rgba(0,0,0,.8); opacity: 0; transform: translate(-50%, 12px); pointer-events: none; transition: opacity .25s, transform .3s var(--ease); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+@media (min-width: 1024px) { .toast { bottom: 32px; } }
+@keyframes rise { from { transform: translateY(14px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes fade { from { opacity: 0; } }
+.enter { animation: fade .2s ease; }
+
+/* Tables & links */
+.matrix th, .matrix td { white-space: nowrap; }
+.matrix .stick { position: sticky; left: 0; z-index: 2; background: var(--surface); }
+.mat-link { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; height: 32px; padding: 0 11px; border-radius: 9px; font-size: 12.5px; font-weight: 600; color: var(--fg); background: var(--surface-3); border: 1px solid var(--line); transition: all .15s var(--ease); }
+.mat-link:hover { border-color: var(--line-2); transform: translateY(-1px); }
+.qlist { min-width: 0; }
+
+
+/* Solid class-colour cards: the "up next" hero, class cards, class header */
+.hero-c { --hero-paint: linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px) 0 0 / 24px 24px, linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px) 0 0 / 24px 24px, color-mix(in srgb, var(--c) 86%, #0b0e14);
+  background: var(--hero-paint); color: #fff; border-color: transparent; box-shadow: 0 10px 28px -16px color-mix(in srgb, var(--c) 80%, transparent); }
+.tile.lift.hero-c:hover { background: var(--hero-paint); filter: brightness(1.06); border-color: transparent; }
+.hero-c .muted, .hero-c .dim { color: rgba(255,255,255,.8); }
+.hero-c .c, .hero-c .eyebrow { color: rgba(255,255,255,.85); }
+.hero-c .inner { background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.2); }
+.hero-c .dot { background: #fff; }
+.hero-c .pulse { box-shadow: 0 0 0 4px rgba(255,255,255,.3); }
+.hero-c .btn { background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.24); color: #fff; }
+.hero-c .btn:hover { background: rgba(255,255,255,.26); border-color: rgba(255,255,255,.4); }
+.hero-c .btn-c { background: #fff; border-color: #fff; color: color-mix(in srgb, var(--c) 75%, #000); }
+.hero-c .btn-c:hover { background: #fff; filter: brightness(.96); }
+.hero-c .btn-ghost { background: transparent; border-color: transparent; }
+.hero-c .icon-btn { color: rgba(255,255,255,.85); }
+.hero-c .icon-btn:hover { background: rgba(255,255,255,.18); color: #fff; }
+.hero-c .tag-next { background: #fff; color: #11151c; }
+.hero-c .mat-link { background: rgba(255,255,255,.18); border-color: rgba(255,255,255,.22); color: #fff; }
+.hero-c .pring .bg { stroke: rgba(255,255,255,.25); }
+.hero-c .pring .fg { stroke: #fff; }
+
+/* Week calendar */
+.tt { position: relative; }
+.tt-head, .tt-body { display: grid; grid-template-columns: 62px repeat(7, minmax(0, 1fr)); }
+.tt-head { border-bottom: 1px solid var(--line); }
+.tt-day { display: flex; align-items: center; gap: 8px; padding: 12px 6px 12px 12px; border-left: 1px solid var(--line); min-width: 0; }
+.tt-num { width: 34px; height: 34px; border-radius: 999px; display: grid; place-items: center; flex: none; font-family: var(--display); font-weight: 700; font-size: 16px; background: var(--surface-2); }
+.tt-num.on { background: var(--fg); color: var(--surface); }
+.tt-body { position: relative; margin: 14px 0 16px; }
+.tt-times { position: relative; }
+.tt-times span { position: absolute; right: 10px; transform: translateY(-50%); font-size: 11px; font-weight: 600; color: var(--dim); white-space: nowrap; }
+.tt-col { position: relative; border-left: 1px solid var(--line); }
+.tt-col.on { background: color-mix(in srgb, var(--fg) 3.5%, transparent); }
+.tt-line { position: absolute; left: 0; right: 0; border-top: 1px dashed var(--line); }
+.tt-block { position: absolute; z-index: 1; display: flex; flex-direction: column; gap: 2px; text-align: left; padding: 7px 9px; border-radius: 10px; overflow: hidden; font-size: 13px; line-height: 1.25; color: #fff; background: color-mix(in srgb, var(--c) 88%, #0b0e14); box-shadow: 0 4px 12px -8px color-mix(in srgb, var(--c) 90%, transparent); transition: transform .15s var(--ease), filter .15s, box-shadow .15s; }
+.tt-block:hover { transform: translateY(-1px); filter: brightness(1.07); box-shadow: 0 8px 18px -8px color-mix(in srgb, var(--c) 90%, transparent); }
+.tt-block:active { transform: scale(.97); }
+.tt-block.static { position: static; width: 100%; flex-direction: row; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; font-size: 14px; }
+.tt-now { position: absolute; z-index: 2; left: -1px; right: 0; height: 2px; background: var(--bad); pointer-events: none; }
+.tt-now::before { content: ""; position: absolute; left: -4px; top: -4px; width: 10px; height: 10px; border-radius: 999px; background: var(--bad); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modal-root"></div>
+<div id="confirm-root"></div>
+<div id="toast" class="toast" role="status"></div>
+<input type="file" id="import-file" accept="application/json,.json" hidden>
+
+<script>
+/* =====================================================================
+   SAT Math HQ — single-file tutoring manager
+   Local file: data in localStorage. As a claude.ai artifact: synced to
+   your account's private store. Export/Import JSON for backups.
+   ===================================================================== */
+
+const STORE_KEY = 'satMathHQ.data.v1';
+const UI_KEY = 'satMathHQ.ui.v1';
+
+const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const WEEK_ORDER = [1,2,3,4,5,6,0];
+
+// Class hues, tuned bright for a dark background
+// Mid-tone class hues: readable as text on the light theme, still clear on dark
+const PALETTE = { rose:'#e34a6f', violet:'#7b61f0', teal:'#0f9e8e', amber:'#d18a00', sky:'#1d8fd6', emerald:'#1a9a62', orange:'#e2701f', fuchsia:'#b847cc' };
+
+/* Theme: light by default, remembered per device */
+const MODE_KEY = 'satMathHQ.mode';
+let mode = 'light';
+try { mode = localStorage.getItem(MODE_KEY) || 'light'; } catch (e) {}
+document.documentElement.dataset.mode = mode;
+
+const STATUS = {
+  missing:   { label:'Missing',   cls:'s-missing' },
+  submitted: { label:'Submitted', cls:'s-submitted' },
+  graded:    { label:'Graded',    cls:'s-graded' },
+};
+const NEXT_STATUS = { missing:'submitted', submitted:'graded', graded:'missing' };
+
+const MAT = {
+  exercise: { label:'Exercise',      icon:'file' },
+  test:     { label:'Practice test', icon:'test' },
+  key:      { label:'Answer key',    icon:'key' },
+  other:    { label:'Other',         icon:'link' },
+};
+
+const TABS = [
+  { id:'today',      label:'Today',      icon:'home' },
+  { id:'timetable',  label:'Timetable',  icon:'calendar' },
+  { id:'classes',    label:'Classes',    icon:'users' },
+  { id:'homework',   label:'Homework',   icon:'checkbox' },
+  { id:'curriculum', label:'Curriculum', icon:'book' },
+];
+
+const ICONS = {
+  home: '<path d="M3.5 10.5 12 3.5l8.5 7"/><path d="M5.5 9v11.5h13V9"/><path d="M10 20.5v-6h4v6"/>',
+  calendar: '<rect x="3" y="4.5" width="18" height="16.5" rx="3.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/>',
+  users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.6.8 2.6 2.5 3 5.2"/>',
+  checkbox: '<rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><path d="m8 12.2 2.8 2.8 5.4-5.5"/>',
+  book: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/>',
+  download: '<path d="M12 3.5v11m0 0-4.5-4.5M12 14.5l4.5-4.5"/><path d="M4 16.5v2.5A2 2 0 0 0 6 21h12a2 2 0 0 0 2-2v-2.5"/>',
+  upload: '<path d="M12 14.5v-11m0 0L7.5 8M12 3.5 16.5 8"/><path d="M4 16.5v2.5A2 2 0 0 0 6 21h12a2 2 0 0 0 2-2v-2.5"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  pencil: '<path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  video: '<rect x="2.5" y="6" width="13" height="12" rx="3"/><path d="m15.5 10.5 6-3.5v10l-6-3.5"/>',
+  link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+  copy: '<rect x="8" y="8" width="13" height="13" rx="3"/><path d="M16 8V5.5A2.5 2.5 0 0 0 13.5 3h-8A2.5 2.5 0 0 0 3 5.5v8A2.5 2.5 0 0 0 5.5 16H8"/>',
+  chevron: '<path d="m9 6 6 6-6 6"/>',
+  back: '<path d="m15 6-6 6 6 6"/>',
+  x: '<path d="M6 6l12 12M18 6 6 18"/>',
+  up: '<path d="m6 15 6-6 6 6"/>',
+  down: '<path d="m6 9 6 6 6-6"/>',
+  file: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>',
+  test: '<path d="M9 3h6M10 3v6L4.5 18.5A1.7 1.7 0 0 0 6 21h12a1.7 1.7 0 0 0 1.5-2.5L14 9V3"/><path d="M7 15h10"/>',
+  key: '<circle cx="7.5" cy="15.5" r="4"/><path d="m10.5 12.5 9-9M16 7l3 3"/>',
+  tick: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+  spark: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/>',
+  shield: '<path d="M12 3 4.5 6v6c0 4.4 3.2 7.8 7.5 9 4.3-1.2 7.5-4.6 7.5-9V6z"/><path d="m9 12 2 2 4-4"/>',
+  moon: '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
+};
+const icon = (n, s = 18) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n] || ''}</svg>`;
+const CHECK_SVG = '<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
+
+/* ---------- Utilities ---------- */
+const uid = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-4);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+const pad = n => String(n).padStart(2, '0');
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const toMin = t => { const [h, m] = String(t).split(':').map(Number); return h * 60 + m; };
+const fmtTime = t => { const [h, m] = String(t).split(':').map(Number); return `${((h + 11) % 12) + 1}:${pad(m)} ${h >= 12 ? 'PM' : 'AM'}`; };
+const fmtDate = s => new Date(s + 'T00:00').toLocaleDateString('en-US', { month:'short', day:'numeric' });
+const fmtDur = m => m < 60 ? `${m} min` : `${Math.floor(m / 60)}h${m % 60 ? ' ' + (m % 60) + 'm' : ''}`;
+const initials = n => String(n).trim().split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+const opts = (list, sel) => list.map(([v, l]) => `<option value="${esc(v)}" ${String(v) === String(sel) ? 'selected' : ''}>${esc(l)}</option>`).join('');
+const field = (label, input) => `<div><span class="label">${label}</span>${input}</div>`;
+const scoreCls = p => p >= 80 ? 'sc-ok' : p >= 60 ? 'sc-warn' : 'sc-bad';
+const plural = (n, w) => `${n} ${w}${n === 1 ? '' : w.endsWith('s') ? 'es' : 's'}`;
+
+/* ---------- Data ---------- */
+function normalize(d) {
+  d = d || {};
+  return {
+    version: 1,
+    classes: d.classes || [],
+    students: d.students || [],
+    schedule: d.schedule || [],
+    curriculum: (d.curriculum || []).map(ch => ({ ...ch, units: ch.units || [] })),
+    progress: d.progress || {},
+    materials: d.materials || [],
+    assignments: d.assignments || [],
+    records: d.records || {},
+    lastExport: d.lastExport || null,
+  };
+}
+function load() {
+  try { const raw = localStorage.getItem(STORE_KEY); return raw ? normalize(JSON.parse(raw)) : null; }
+  catch (e) { return null; }
+}
+function loadUI() { try { return JSON.parse(localStorage.getItem(UI_KEY)) || {}; } catch (e) { return {}; } }
+function saveUI() { try { localStorage.setItem(UI_KEY, JSON.stringify(ui)); } catch (e) {} }
+function saveLocal() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); return true; } catch (e) { return false; }
+}
+function save() {
+  const ok = saveLocal();
+  if (cloud.db) scheduleCloud();
+  else if (!ok) toast('Could not save: browser storage is blocked or full. Export a backup.');
+}
+
+/* ---------- Cloud sync (only when opened as a claude.ai artifact) ----------
+   Stored in your own private store as JSON chunks plus a manifest that
+   points at the current set, so it follows you across devices. */
+const cloud = { db: null, uid: null, ready: false, rev: null, n: 0, pendingRev: null, state: 'local', timer: null, writing: false, again: false };
+const CHUNK = 30000;
+const cPath = name => `data/users/${cloud.uid}/${name}`;
+const inArtifact = () => typeof window.claude?.use === 'function';
+
+const SYNC = {
+  loading: ['Loading…', 'sync-busy'],
+  saving:  ['Saving…', 'sync-busy'],
+  synced:  ['Synced', 'sync-ok'],
+  device:  ['This device only', 'sync-warn'],
+  error:   ['Sync paused', 'sync-warn'],
+  full:    ['Cloud storage full', 'sync-bad'],
+};
+function syncChip() {
+  const s = SYNC[cloud.state];
+  if (!s) return '<span id="sync-chip" hidden></span>';
+  return `<span id="sync-chip" class="sync ${s[1]} hidden sm:inline-flex">${s[1] === 'sync-ok' ? '<i></i>' : ''}${s[0]}</span>`;
+}
+function setSync(state) {
+  cloud.state = state;
+  const el = document.getElementById('sync-chip');
+  if (el) el.outerHTML = syncChip();
+}
+async function cloudInit() {
+  if (!inArtifact()) return;
+  setSync('loading');
+  try {
+    const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
+    const id = user ? await user.id() : null;
+    if (!db || !id) { setSync('device'); return; }
+    cloud.db = db; cloud.uid = id;
+    const man = await db.doc(cPath('manifest')).get();
+    if (man.exists) await pullFrom(man.data());
+    cloud.ready = true;
+    if (!man.exists) await pushNow();
+    setSync('synced');
+    db.doc(cPath('manifest')).onSnapshot(snap => {
+      const m = snap.exists ? snap.data() : null;
+      if (m && m.rev !== cloud.rev && m.rev !== cloud.pendingRev) applyRemote(m);
+    }, () => setSync('error'));
+  } catch (e) {
+    cloud.db = null; setSync('device');
+  }
+}
+async function pullFrom(m) {
+  const parts = await Promise.all(Array.from({ length: m.chunks }, (_, i) => cloud.db.doc(cPath(`chunk-${m.rev}-${i}`)).get()));
+  if (parts.some(p => !p.exists)) return;
+  data = normalize(JSON.parse(parts.map(p => p.data().s).join('')));
+  cloud.rev = m.rev; cloud.n = m.chunks;
+  saveLocal(); render();
+}
+function applyRemote(m) {
+  if (!idle()) { setTimeout(() => { if (m.rev !== cloud.rev) applyRemote(m); }, 3000); return; }
+  pullFrom(m).catch(() => setSync('error'));
+}
+function scheduleCloud() {
+  clearTimeout(cloud.timer);
+  setSync('saving');
+  cloud.timer = setTimeout(pushNow, 800);
+}
+async function pushNow() {
+  clearTimeout(cloud.timer); cloud.timer = null;
+  if (!cloud.db || !cloud.ready) return;
+  if (cloud.writing) { cloud.again = true; return; }
+  cloud.writing = true; setSync('saving');
+  try {
+    const json = JSON.stringify(data);
+    const rev = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+    const n = Math.max(1, Math.ceil(json.length / CHUNK));
+    for (let i = 0; i < n; i++) await cloud.db.doc(cPath(`chunk-${rev}-${i}`)).set({ s: json.slice(i * CHUNK, (i + 1) * CHUNK) });
+    cloud.pendingRev = rev;
+    await cloud.db.doc(cPath('manifest')).set({ rev, chunks: n, savedAt: Date.now() });
+    const oldRev = cloud.rev, oldN = cloud.n;
+    cloud.rev = rev; cloud.n = n; cloud.pendingRev = null;
+    if (oldRev) for (let i = 0; i < oldN; i++) cloud.db.doc(cPath(`chunk-${oldRev}-${i}`)).delete().catch(() => {});
+    setSync('synced');
+  } catch (e) {
+    setSync(e?.code === 'quota_exceeded' ? 'full' : 'error');
+  }
+  cloud.writing = false;
+  if (cloud.again) { cloud.again = false; pushNow(); }
+}
+
+/* ---------- In-page confirm (artifacts can't show confirm/prompt/alert) ---------- */
+function askConfirm(message, { ok = 'Delete', danger = true } = {}) {
+  return new Promise(resolve => {
+    const root = document.getElementById('confirm-root');
+    root.innerHTML = `
+      <div class="scrim top">
+        <div role="alertdialog" aria-modal="true" class="sheet" style="max-width:400px">
+          <p class="display text-lg font-semibold leading-snug">${message}</p>
+          <div class="mt-6 flex gap-2">
+            <button id="cf-no" class="btn flex-1">Cancel</button>
+            <button id="cf-yes" class="btn flex-1 ${danger ? 'btn-c' : 'btn-primary'}" ${danger ? 'style="--c:var(--bad)"' : ''}>${ok}</button>
+          </div>
+        </div>
+      </div>`;
+    const done = v => { root.innerHTML = ''; resolve(v); };
+    root.querySelector('#cf-yes').onclick = () => done(true);
+    root.querySelector('#cf-no').onclick = () => done(false);
+    root.firstElementChild.onclick = e => { if (e.target === e.currentTarget) done(false); };
+    root.querySelector('#cf-yes').focus();
+  });
+}
+
+/* ---------- Sample data (first run only) ---------- */
+function seed() {
+  const today = new Date().getDay();
+  const now = Date.now();
+  const dd = n => ymd(new Date(now + n * 86400000));
+  const C = { wine: uid(), brain: uid() };
+  const mkStudents = (names, classId) => names.map(name => ({ id: uid(), name, classId, contact: '' }));
+  const wine = mkStudents(['Min', 'Khun', 'Jue Jue', 'Aung Paing'], C.wine);
+  const brain = mkStudents(['Thiri', 'Nay Lin', 'Hsu Myat'], C.brain);
+  wine[0].contact = 'Viber · 09 xxx xxx xxx';
+  const mk = (title, units) => ({ id: uid(), title, units: units.map(t => ({ id: uid(), title: t })) });
+  const curriculum = [
+    mk('Chapter 1 · Algebra', ['Unit 1 · Linear equations', 'Unit 2 · Linear functions', 'Unit 3 · Systems of equations', 'Unit 4 · Linear inequalities']),
+    mk('Chapter 2 · Advanced Math', ['Unit 1 · Equivalent expressions', 'Unit 2 · Quadratics', 'Unit 3 · Exponential functions', 'Unit 4 · Nonlinear systems']),
+    mk('Chapter 3 · Problem Solving & Data', ['Unit 1 · Ratios & rates', 'Unit 2 · Percentages', 'Unit 3 · Statistics', 'Unit 4 · Probability']),
+    mk('Chapter 4 · Geometry & Trig', ['Unit 1 · Area & volume', 'Unit 2 · Lines, angles & triangles', 'Unit 3 · Right-triangle trig', 'Unit 4 · Circles']),
+  ];
+  const [ch1, ch2] = curriculum;
+  const schedule = [];
+  [1, 3, 5].forEach(day => schedule.push({ id: uid(), classId: C.wine, day, start: '16:00', end: '17:30' }));
+  [2, 4].forEach(day => schedule.push({ id: uid(), classId: C.brain, day, start: '19:00', end: '20:30' }));
+  if (today === 0 || today === 6) {
+    schedule.push({ id: uid(), classId: C.wine, day: today, start: '14:00', end: '15:30' });
+    schedule.push({ id: uid(), classId: C.brain, day: today, start: '19:00', end: '20:30' });
+  }
+  const A = [
+    { id: uid(), classId: C.wine,  title: 'Ch1 · Unit 3 HW', type: 'homework', max: 20, due: dd(-7), createdAt: now - 3 },
+    { id: uid(), classId: C.wine,  title: 'Practice Test 1', type: 'test',     max: 44, due: dd(-4), createdAt: now - 2 },
+    { id: uid(), classId: C.wine,  title: 'Ch2 · Unit 1 HW', type: 'homework', max: 20, due: dd(-1), createdAt: now - 1 },
+    { id: uid(), classId: C.brain, title: 'Ch1 · Unit 2 HW', type: 'homework', max: 15, due: dd(2),  createdAt: now },
+  ];
+  const records = {};
+  const put = (a, s, status, score = '') => { (records[a.id] ??= {})[s.id] = { status, score: String(score) }; };
+  put(A[0], wine[0], 'graded', 16); put(A[0], wine[1], 'graded', 12); put(A[0], wine[2], 'graded', 19); put(A[0], wine[3], 'graded', 10);
+  put(A[1], wine[0], 'graded', 33); put(A[1], wine[1], 'graded', 30); put(A[1], wine[2], 'graded', 40); put(A[1], wine[3], 'missing');
+  put(A[2], wine[0], 'graded', 18); put(A[2], wine[1], 'submitted');  put(A[2], wine[2], 'submitted');  put(A[2], wine[3], 'missing');
+  put(A[3], brain[0], 'submitted'); put(A[3], brain[1], 'graded', 14); put(A[3], brain[2], 'missing');
+  return normalize({
+    classes: [{ id: C.wine, name: '800 Wine', color: 'rose' }, { id: C.brain, name: 'Brain Deficit', color: 'violet' }],
+    students: [...wine, ...brain],
+    schedule,
+    curriculum,
+    progress: { [C.wine]: [...ch1.units.map(u => u.id), ch2.units[0].id], [C.brain]: [ch1.units[0].id, ch1.units[1].id] },
+    materials: [
+      { id: uid(), itemId: ch2.units[1].id, title: 'Quadratics exercises', url: 'https://drive.google.com/', kind: 'exercise' },
+      { id: uid(), itemId: ch2.units[1].id, title: 'Quadratics answer key', url: 'https://drive.google.com/', kind: 'key' },
+      { id: uid(), itemId: ch1.id, title: 'Chapter 1 review test', url: 'https://drive.google.com/', kind: 'test' },
+    ],
+    assignments: A,
+    records,
+  });
+}
+
+let data = load();
+if (!data) { data = seed(); save(); }
+let ui = Object.assign({ tab:'today', classId:null, hwClassId:null, hwAssignmentId:null, curClassId:null, curView:'progress' }, loadUI());
+let pendingFocus = null;
+let lastView = null;
+const fx = { pop: null, tick: null }; // one-shot micro-interaction targets for the next render
+
+/* ---------- Getters ---------- */
+const cls = id => data.classes.find(c => c.id === id);
+const pal = c => PALETTE[c?.color] || PALETTE.violet;
+const cv = c => `--c:${pal(c)}`;
+const studentsOf = id => data.students.filter(s => s.classId === id);
+const slotSort = (a, b) => (WEEK_ORDER.indexOf(a.day) - WEEK_ORDER.indexOf(b.day)) || a.start.localeCompare(b.start);
+const slotsOf = id => data.schedule.filter(s => s.classId === id).sort(slotSort);
+const slotsOnDay = d => data.schedule.filter(s => s.day === d && cls(s.classId)).sort((a, b) => a.start.localeCompare(b.start));
+const byAssign = (a, b) => (a.due || '9999').localeCompare(b.due || '9999') || (a.createdAt - b.createdAt);
+const assignmentsOf = id => data.assignments.filter(a => a.classId === id).sort(byAssign);
+
+function rec(aid, sid) {
+  data.records[aid] ??= {};
+  return data.records[aid][sid] ??= { status: 'missing', score: '' };
+}
+function pctOf(r, a) {
+  if (!r || r.score === '' || r.score == null || !a.max) return null;
+  const v = parseFloat(r.score);
+  return isNaN(v) ? null : Math.round(v / a.max * 100);
+}
+function checkItems() {
+  const out = [];
+  data.curriculum.forEach(ch => {
+    if (!ch.units.length) out.push({ id: ch.id, chapter: ch });
+    else ch.units.forEach(u => out.push({ id: u.id, chapter: ch, unit: u }));
+  });
+  return out;
+}
+const itemLabel = it => it.unit ? `${it.chapter.title} — ${it.unit.title}` : it.chapter.title;
+function progressOf(classId) {
+  const done = new Set(data.progress[classId] || []);
+  const all = checkItems();
+  const doneItems = all.filter(i => done.has(i.id));
+  return { done, total: all.length, doneCount: doneItems.length, next: all.find(i => !done.has(i.id)) || null,
+           lastDone: doneItems.pop() || null, pct: all.length ? Math.round(doneItems.length / all.length * 100) : 0 };
+}
+const nextLabel = pr => !pr.total ? 'No syllabus yet. Add one in Curriculum.' : pr.next ? itemLabel(pr.next) : 'Syllabus complete';
+const materialsFor = it => data.materials.filter(m => m.itemId === it.id || (it.unit && m.itemId === it.chapter.id));
+const studentScores = (sid, classId) => assignmentsOf(classId).map(a => pctOf(data.records[a.id]?.[sid], a)).filter(v => v !== null);
+
+function ungradedList() {
+  const out = [];
+  data.assignments.forEach(a => {
+    if (!cls(a.classId)) return;
+    studentsOf(a.classId).forEach(s => { if (data.records[a.id]?.[s.id]?.status === 'submitted') out.push({ a, s }); });
+  });
+  return out;
+}
+function missingList() {
+  const today = ymd(new Date()); const out = [];
+  [...data.assignments].sort(byAssign).forEach(a => {
+    if (!cls(a.classId) || (a.due && a.due > today)) return;
+    studentsOf(a.classId).forEach(s => { const r = data.records[a.id]?.[s.id]; if (!r || r.status === 'missing') out.push({ a, s }); });
+  });
+  return out;
+}
+function backupInfo() {
+  if (!data.lastExport) return { text: 'Never backed up', warn: true };
+  const days = Math.floor((Date.now() - data.lastExport) / 86400000);
+  return { text: days === 0 ? 'Backed up today' : `Backed up ${plural(days, 'day')} ago`, warn: days >= 7 };
+}
+function nextSessionAfterToday(d) {
+  for (let i = 1; i <= 7; i++) {
+    const day = (d + i) % 7, s = slotsOnDay(day)[0];
+    if (s) return { s, day, inDays: i };
+  }
+  return null;
+}
+function ensureUI() {
+  if (!TABS.some(t => t.id === ui.tab)) ui.tab = 'today';
+  if (ui.classId && !cls(ui.classId)) ui.classId = null;
+  if (!cls(ui.hwClassId)) ui.hwClassId = data.classes[0]?.id || null;
+  const asg = assignmentsOf(ui.hwClassId);
+  if (!asg.some(a => a.id === ui.hwAssignmentId)) ui.hwAssignmentId = asg[asg.length - 1]?.id || null;
+  if (!cls(ui.curClassId)) ui.curClassId = data.classes[0]?.id || null;
+  if (!['progress', 'syllabus', 'materials'].includes(ui.curView)) ui.curView = 'progress';
+}
+
+/* =====================================================================
+   RENDER
+   ===================================================================== */
+function render() {
+  ensureUI();
+  const todo = ungradedList().length;
+  const viewKey = ui.tab + '|' + (ui.tab === 'classes' ? ui.classId || '' : ui.tab === 'curriculum' ? ui.curView : '');
+  const entering = viewKey !== lastView; lastView = viewKey;
+  document.getElementById('app').innerHTML = `
+    <div class="min-h-screen lg:flex">
+      ${sidebar(todo)}
+      <div class="min-w-0 flex-1 pb-28 lg:pb-12">
+        ${topbar()}
+        <main class="mx-auto max-w-[1320px] px-4 pt-5 md:px-8 md:pt-7 ${entering ? 'enter' : ''}">${VIEWS[ui.tab](entering)}</main>
+      </div>
+      ${dock(todo)}
+    </div>`;
+  fx.pop = null; fx.tick = null;
+  saveUI();
+  if (pendingFocus) {
+    const el = document.querySelector(`[data-focus="${pendingFocus}"]`);
+    pendingFocus = null;
+    if (el) { el.focus(); if (el.select) el.select(); }
+  }
+}
+function commit() { save(); render(); }
+
+/* ---------- Chrome ---------- */
+function sidebar(todo) {
+  return `<aside class="glass sticky top-4 m-4 mr-0 hidden max-h-[calc(100dvh-2rem)] w-64 shrink-0 flex-col self-start overflow-y-auto p-4 lg:flex" style="min-height:min(640px,calc(100dvh - 2rem))">
+    <div class="mb-9 flex items-center gap-3 px-2 pt-2">
+      <div class="logo">Σ</div>
+      <div><p class="display text-lg font-bold leading-tight">SAT Math HQ</p><p class="text-xs dim">Tutoring hub</p></div>
+    </div>
+    <nav class="flex flex-col gap-1.5">
+      ${TABS.map(t => `<button data-action="nav" data-tab="${t.id}" class="nav-item ${ui.tab === t.id ? 'on' : ''}">
+        ${icon(t.icon, 20)}<span class="flex-1 text-left">${t.label}</span>
+        ${t.id === 'today' && todo ? `<span class="badge">${todo}</span>` : ''}
+      </button>`).join('')}
+    </nav>
+    <div class="mt-auto px-2 pb-1">
+      <p class="text-xs leading-relaxed dim">${inArtifact() ? 'Synced to your Claude account. Export a backup now and then.' : 'Saved in this browser. Export often.'}</p>
+    </div>
+  </aside>`;
+}
+function topbar() {
+  const b = backupInfo(), t = TABS.find(x => x.id === ui.tab);
+  return `<header class="topbar">
+    <div class="mx-auto flex max-w-[1320px] items-center gap-3 px-4 py-3 md:px-8">
+      <div class="logo sm lg:hidden">Σ</div>
+      <h1 class="display min-w-0 truncate text-xl font-bold md:text-2xl">${t.label}</h1>
+      ${syncChip()}
+      <div class="ml-auto flex items-center gap-2">
+        <span class="hidden text-xs font-semibold xl:inline ${b.warn ? '' : 'dim'}" ${b.warn ? 'style="color:var(--warn)"' : ''}>${b.text}</span>
+        <button data-action="theme" class="icon-btn" title="${mode === 'dark' ? 'Switch to light' : 'Switch to dark'}" aria-label="Toggle light or dark">${icon(mode === 'dark' ? 'sun' : 'moon', 19)}</button>
+        <button data-action="import" class="btn sm" title="Import a JSON backup">${icon('upload', 17)}<span class="hidden sm:inline">Import</span></button>
+        <button data-action="export" class="btn sm ${b.warn ? 'btn-c' : 'btn-primary'}" ${b.warn ? 'style="--c:var(--warn)"' : ''} title="Export a JSON backup">${icon('download', 17)}<span>Export</span></button>
+      </div>
+    </div>
+  </header>`;
+}
+function dock(todo) {
+  return `<nav class="dock glass lg:hidden">
+    ${TABS.map(t => `<button data-action="nav" data-tab="${t.id}" class="${ui.tab === t.id ? 'on' : ''}">
+      ${icon(t.icon, 21)}<span>${t.label}</span>
+      ${t.id === 'today' && todo ? `<span class="badge">${todo}</span>` : ''}
+    </button>`).join('')}
+  </nav>`;
+}
+
+/* ---------- Shared pieces ---------- */
+function classChips(selected, action) {
+  return `<div class="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 py-1 md:mx-0 md:flex-wrap md:px-0">
+    ${data.classes.map(c => `<button data-action="${action}" data-id="${c.id}" class="chip ${c.id === selected ? 'on' : ''}" style="${cv(c)}"><span class="dot"></span>${esc(c.name)}</button>`).join('')}
+  </div>`;
+}
+const bar = (pct, c) => `<div class="bar" style="${c ? cv(c) : ''}"><i style="width:${pct}%"></i></div>`;
+function ring(pct, size = 52, w = 5, label = true, fs = 13) {
+  const r = (size - w) / 2, C = 2 * Math.PI * r, off = C * (1 - pct / 100), m = size / 2;
+  return `<div class="ring-wrap" style="width:${size}px;height:${size}px">
+    <svg class="pring" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+      <circle class="bg" cx="${m}" cy="${m}" r="${r}" stroke-width="${w}"/>
+      <circle class="fg" cx="${m}" cy="${m}" r="${r}" stroke-width="${w}" stroke-dasharray="${C.toFixed(2)}" stroke-dashoffset="${off.toFixed(2)}" transform="rotate(-90 ${m} ${m})"/>
+    </svg>${label ? `<span style="font-size:${fs}px">${pct}%</span>` : ''}
+  </div>`;
+}
+const avatar = (name, c) => `<span class="avatar" style="${cv(c)}">${esc(initials(name))}</span>`;
+let sparkN = 0;
+function sparkline(vals, c) {
+  if (vals.length < 2) return `<span class="text-xs dim">${vals.length ? '1 score' : 'No scores'}</span>`;
+  const w = 92, h = 32, p = 3, id = 'sg' + (++sparkN);
+  const pts = vals.map((v, i) => [p + i * (w - 2 * p) / (vals.length - 1), h - p - (Math.min(v, 100) / 100) * (h - 2 * p)]);
+  const line = pts.map(q => q.map(n => n.toFixed(1)).join(',')).join(' ');
+  const last = pts[pts.length - 1];
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="${cv(c)};overflow:visible" aria-label="Score trend">
+    <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--c);stop-opacity:.18"/><stop offset="1" style="stop-color:var(--c);stop-opacity:0"/></linearGradient></defs>
+    <polygon points="${p},${h} ${line} ${(w - p).toFixed(1)},${h}" fill="url(#${id})"/>
+    <polyline points="${line}" fill="none" style="stroke:var(--c)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.2" style="fill:var(--c)"/>
+  </svg>`;
+}
+const statusPill = (r, aid, sid, extra = 'status-btn') =>
+  `<button data-action="cycle-status" data-aid="${aid}" data-sid="${sid}" class="pill ${STATUS[r.status].cls} ${extra} ${fx.pop === aid + sid ? 'pop' : ''}" title="Tap to change status"><span class="pd"></span>${STATUS[r.status].label}</button>`;
+const sectionHead = (title, right = '') => `<div class="mb-4 flex min-h-[34px] items-center justify-between gap-3"><h3 class="tile-title">${title}</h3>${right}</div>`;
+const emptyTile = (msg, tab, label) => `<div class="glass tile flex flex-col items-center gap-4 py-12 text-center"><p class="muted">${msg}</p>${tab ? `<button data-action="nav" data-tab="${tab}" class="btn btn-primary">${label}</button>` : ''}</div>`;
+const matLink = m => `<a href="${esc(m.url)}" target="_blank" rel="noopener" class="mat-link">${icon(MAT[m.kind]?.icon || 'link', 15)}<span class="truncate">${esc(m.title)}</span></a>`;
+
+/* =====================================================================
+   VIEWS
+   ===================================================================== */
+
+/* ---------- TODAY (bento) ---------- */
+function viewToday(entering) {
+  const now = new Date(), d = now.getDay(), mins = now.getHours() * 60 + now.getMinutes();
+  const slots = slotsOnDay(d);
+  const live = slots.find(s => toMin(s.start) <= mins && mins < toMin(s.end));
+  const focus = live || slots.find(s => toMin(s.start) > mins) || null;
+  const toGrade = ungradedList(), missing = missingList();
+  const summary = [
+    slots.length ? `${plural(slots.length, 'class')} today` : 'No classes today',
+    toGrade.length ? `<span style="color:var(--warn)">${toGrade.length} to grade</span>` : '',
+    missing.length ? `<span style="color:var(--bad)">${missing.length} missing</span>` : '',
+  ].filter(Boolean).join('<span class="dim"> · </span>');
+  return `
+    <div class="mb-6">
+      <h2 class="display text-3xl font-bold md:text-4xl">${now.toLocaleDateString('en-US', { weekday:'long' })}<span class="dim">, ${now.toLocaleDateString('en-US', { month:'long', day:'numeric' })}</span></h2>
+      <p class="mt-1.5 text-sm font-semibold muted">${summary}</p>
+    </div>
+    <div class="bento ${entering ? 'enter-tiles' : ''}">
+      ${heroTile(focus, live, mins, slots, d)}
+      ${gradeTile(toGrade)}
+      ${timelineTile(slots, mins, focus, d)}
+      ${missingTile(missing)}
+      ${progressTile()}
+      ${backupTile()}
+      ${weekTile(d, now)}
+    </div>`;
+}
+
+function groupByAssignment(list) {
+  const m = new Map();
+  list.forEach(({ a, s }) => { if (!m.has(a.id)) m.set(a.id, { a, studs: [] }); m.get(a.id).studs.push(s); });
+  return [...m.values()];
+}
+
+function heroTile(s, live, mins, slots, d) {
+  if (!s) {
+    const nx = nextSessionAfterToday(d), allDone = slots.length > 0;
+    const c = nx ? cls(nx.s.classId) : null;
+    return `<section class="glass tile hero-c b-hero flex flex-col justify-between gap-6 p-6 md:p-8" style="--c:#475569">
+      <span class="orb"></span>
+      <div>
+        <p class="eyebrow">${allDone ? 'All done' : 'Today'}</p>
+        <h2 class="display mt-3 text-4xl font-bold md:text-5xl">${allDone ? 'Classes done for today' : 'No classes today'}</h2>
+        <p class="mt-3 max-w-md muted">${allDone ? `You taught ${plural(slots.length, 'class')}. Clear the grading queue and you’re finished.` : 'A good day to grade, plan, or rest.'}</p>
+      </div>
+      ${nx ? `<div class="inner flex flex-wrap items-center gap-3" style="${cv(c)}">
+        <span class="dot"></span>
+        <div class="min-w-0 flex-1"><p class="eyebrow">Next class</p><p class="mt-0.5 font-bold">${esc(c.name)} · ${nx.inDays === 1 ? 'Tomorrow' : DAYS[nx.day]} at ${fmtTime(nx.s.start)}</p></div>
+        <button data-action="open-class" data-id="${c.id}" class="btn sm">Open class ${icon('chevron', 16)}</button>
+      </div>` : `<button data-action="nav" data-tab="timetable" class="btn btn-primary self-start">${icon('calendar')} Set up your timetable</button>`}
+    </section>`;
+  }
+  const c = cls(s.classId), pr = progressOf(c.id), n = studentsOf(c.id).length;
+  const st = toMin(s.start), en = toMin(s.end);
+  const mats = pr.next ? materialsFor(pr.next).slice(0, 4) : [];
+  const status = live
+    ? `<span class="tag tag-now">Live</span><span class="text-sm font-semibold" style="color:var(--ok)">${fmtDur(en - mins)} left</span>`
+    : `<span class="tag tag-next">Up next</span><span class="text-sm font-semibold muted">starts in ${fmtDur(st - mins)}</span>`;
+  return `<section class="glass tile hero-c b-hero flex flex-col gap-6 p-6 md:p-8" style="${cv(c)}">
+    <span class="orb"></span>
+    <div class="flex items-start justify-between gap-3">
+      <div class="flex flex-wrap items-center gap-2.5">${status}</div>
+      <button data-action="edit-slot" data-id="${s.id}" class="icon-btn" title="Edit this class time">${icon('pencil')}</button>
+    </div>
+    <div>
+      <h2 class="display flex items-center gap-4 text-4xl font-bold md:text-5xl"><span class="dot ${live ? 'pulse' : ''}" style="width:12px;height:12px"></span>${esc(c.name)}</h2>
+      <p class="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 font-semibold muted">
+        <span class="inline-flex items-center gap-2">${icon('clock', 17)}${fmtTime(s.start)} – ${fmtTime(s.end)}</span>
+        <span class="inline-flex items-center gap-2">${icon('users', 17)}${plural(n, 'student')}</span>
+      </p>
+    </div>
+    <div class="inner">
+      <p class="eyebrow c">Next to teach</p>
+      <p class="mt-1.5 text-lg font-bold leading-snug">${esc(nextLabel(pr))}</p>
+      ${mats.length ? `<div class="mt-3 flex flex-wrap gap-2">${mats.map(matLink).join('')}</div>` : ''}
+    </div>
+    <div class="mt-auto flex flex-wrap gap-2.5">
+      ${pr.next ? `<button data-action="tick-next" data-id="${c.id}" class="btn btn-c lg">${icon('tick', 19)} Mark taught</button>` : ''}
+      <button data-action="goto-homework" data-id="${c.id}" class="btn lg">${icon('checkbox')} Homework</button>
+      <button data-action="open-class" data-id="${c.id}" class="btn lg btn-ghost">Class ${icon('chevron', 16)}</button>
+    </div>
+  </section>`;
+}
+
+function timelineTile(slots, mins, focus, d) {
+  return `<section class="glass tile b-time">
+    ${sectionHead("Today’s timeline", `<button data-action="add-slot" data-day="${d}" class="icon-btn sm" title="Add a class today">${icon('plus', 17)}</button>`)}
+    ${slots.length ? `<ol class="flex flex-col gap-1">${slots.map(s => {
+      const c = cls(s.classId), done = mins >= toMin(s.end), now = !done && mins >= toMin(s.start), next = focus && focus.id === s.id && !now;
+      return `<li class="row shift flex items-center gap-3 p-2.5 ${done ? 'is-done' : ''}" style="${cv(c)}">
+        <div class="w-[68px] shrink-0 text-right"><p class="text-sm font-bold">${fmtTime(s.start)}</p><p class="text-xs dim">${fmtTime(s.end)}</p></div>
+        <span class="dot ${now ? 'pulse' : ''}"></span>
+        <button data-action="open-class" data-id="${c.id}" class="min-w-0 flex-1 truncate text-left font-bold">${esc(c.name)}</button>
+        ${now ? '<span class="tag tag-now">Live</span>' : next ? '<span class="tag tag-next">Next</span>' : done ? '<span class="tag tag-done">Done</span>' : ''}
+      </li>`; }).join('')}</ol>`
+    : `<p class="py-6 text-center text-sm muted">Nothing on the clock today.</p>`}
+  </section>`;
+}
+
+function gradeTile(list) {
+  const groups = groupByAssignment(list);
+  let idx = 0;
+  return `<section class="glass tile b-grade flex flex-col">
+    <div class="mb-4 flex items-start justify-between gap-3">
+      <div>
+        <h3 class="tile-title">Needs grading</h3>
+        <p class="mt-0.5 text-xs muted">${list.length ? 'Submitted, not graded yet. Type a score and press Enter.' : 'Students show up here when you mark their work Submitted.'}</p>
+      </div>
+      ${list.length ? `<span class="pill sm s-submitted"><span class="pd"></span>${list.length}</span>` : ''}
+    </div>
+    ${list.length ? `<div class="qlist flex flex-col gap-4">${groups.map(({ a, studs }) => { const c = cls(a.classId); return `<div style="${cv(c)}">
+        <button data-action="goto-homework" data-id="${c.id}" data-aid="${a.id}" class="row flex w-full items-center gap-2.5 px-2 py-2 text-left" title="Open in Homework">
+          <span class="dot"></span>
+          <span class="min-w-0 flex-1 truncate text-sm font-bold">${esc(a.title)}</span>
+          <span class="shrink-0 text-xs muted">${esc(c.name)}${a.due ? ' · due ' + fmtDate(a.due) : ''}</span>
+          <span class="dim">${icon('chevron', 15)}</span>
+        </button>
+        <ul class="mt-1 flex flex-col gap-0.5">${studs.map(s => { const i = idx++; return `<li class="row flex items-center gap-2.5 py-1.5 pl-2 pr-1">
+          ${avatar(s.name, c)}
+          <span class="min-w-0 flex-1 truncate font-semibold">${esc(s.name)}</span>
+          <input type="number" inputmode="decimal" step="any" min="0" placeholder="–" aria-label="Score for ${esc(s.name)}"
+            data-enter="qscore" data-change="score" data-aid="${a.id}" data-sid="${s.id}" data-idx="${i}" data-focus="q-${i}" enterkeyhint="done"
+            class="inp score" style="${cv(c)};width:66px;height:40px;font-size:16px">
+          <span class="w-9 text-xs font-bold dim">/ ${a.max}</span>
+          <button data-action="mark-graded" data-aid="${a.id}" data-sid="${s.id}" class="icon-btn sm ok" title="Mark graded without a score">${icon('tick', 18)}</button>
+        </li>`; }).join('')}</ul>
+      </div>`; }).join('')}</div>`
+    : `<div class="flex flex-1 flex-col items-center justify-center gap-2 py-10 text-center"><span style="color:var(--ok)">${icon('checkbox', 28)}</span><p class="font-bold">All caught up</p><p class="text-sm muted">Nothing waiting to be graded.</p></div>`}
+  </section>`;
+}
+
+function missingTile(list) {
+  const groups = groupByAssignment(list);
+  return `<section class="glass tile b-miss">
+    <div class="mb-4 flex min-h-[34px] items-center justify-between gap-3">
+      <h3 class="tile-title">Missing work</h3>
+      ${list.length ? `<span class="pill sm s-missing"><span class="pd"></span>${list.length}</span>` : ''}
+    </div>
+    ${list.length ? `<div class="flex flex-col gap-1">${groups.slice(0, 5).map(({ a, studs }) => { const c = cls(a.classId); return `<button data-action="goto-homework" data-id="${c.id}" data-aid="${a.id}" class="row block w-full p-2 text-left" style="${cv(c)}">
+        <span class="flex items-center gap-2.5"><span class="dot"></span><span class="min-w-0 flex-1 truncate text-sm font-bold">${esc(a.title)}</span>${a.due ? `<span class="shrink-0 text-xs dim">${fmtDate(a.due)}</span>` : ''}</span>
+        <span class="mt-1 block pl-[19px] text-sm muted">${studs.map(s => esc(s.name)).join(', ')}</span>
+      </button>`; }).join('')}</div>
+      ${groups.length > 5 ? `<p class="mt-2 px-2 text-xs dim">+${groups.length - 5} more assignments in Homework</p>` : ''}`
+    : `<p class="py-3 text-sm muted">Nobody is behind on past-due work.</p>`}
+  </section>`;
+}
+
+function progressTile() {
+  return `<section class="glass tile b-prog">
+    ${sectionHead('Class progress', `<button data-action="nav" data-tab="curriculum" class="icon-btn sm" title="Open curriculum">${icon('chevron', 17)}</button>`)}
+    ${data.classes.length ? `<ul class="flex flex-col gap-1">${data.classes.map(c => { const pr = progressOf(c.id); return `<li>
+      <button data-action="goto-curriculum" data-id="${c.id}" class="row shift flex w-full items-center gap-3 p-2 text-left" style="${cv(c)}">
+        ${ring(pr.pct, 50, 5)}
+        <span class="min-w-0 flex-1"><span class="block truncate font-bold">${esc(c.name)}</span><span class="block truncate text-xs muted">${pr.next ? 'Next: ' + esc(pr.next.unit ? pr.next.unit.title : pr.next.chapter.title) : esc(nextLabel(pr))}</span></span>
+      </button></li>`; }).join('')}</ul>`
+    : `<p class="py-6 text-center text-sm muted">Create a class to track progress.</p>`}
+  </section>`;
+}
+
+function backupTile() {
+  const b = backupInfo();
+  return `<section class="glass tile tint b-backup flex flex-col gap-4" style="--c:${b.warn ? 'var(--warn)' : 'var(--ok)'}">
+    <div class="flex items-center gap-3"><span class="c">${icon('shield', 22)}</span><div><p class="eyebrow">Backup</p><p class="font-bold c">${b.text}</p></div></div>
+    <p class="text-xs leading-relaxed muted">Keep a JSON copy on your computer. Import it to restore or move devices.</p>
+    <div class="mt-auto grid grid-cols-2 gap-2">
+      <button data-action="export" class="btn sm btn-primary">${icon('download', 16)}Export</button>
+      <button data-action="import" class="btn sm">${icon('upload', 16)}Import</button>
+    </div>
+    <button data-action="erase" class="btn sm btn-danger">Erase all data…</button>
+  </section>`;
+}
+
+function weekTile(today, now) {
+  const mon = new Date(now); mon.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+  return `<section class="glass tile b-week">
+    ${sectionHead('This week', `<button data-action="nav" data-tab="timetable" class="btn sm btn-ghost">Timetable ${icon('chevron', 16)}</button>`)}
+    <div class="no-scrollbar -mx-5 flex gap-2.5 overflow-x-auto px-5 pb-1 md:mx-0 md:grid md:grid-cols-7 md:overflow-visible md:px-0">
+      ${WEEK_ORDER.map((d, i) => {
+        const date = new Date(mon); date.setDate(mon.getDate() + i);
+        const slots = slotsOnDay(d), on = d === today;
+        return `<button data-action="nav" data-tab="timetable" class="glass tile lift min-w-[8.5rem] p-3.5 text-left ${on ? 'is-today' : ''}" style="border-radius:20px">
+          <div class="flex items-baseline justify-between"><span class="text-xs font-bold uppercase tracking-wider ${on ? '' : 'dim'}">${SHORT[d]}</span><span class="display text-xl font-bold ${on ? '' : 'muted'}">${date.getDate()}</span></div>
+          <div class="mt-3 flex flex-col gap-2">${slots.length ? slots.map(s => { const c = cls(s.classId); return `<div style="${cv(c)}"><div class="flex items-center gap-2 text-xs font-bold"><span class="dot" style="width:8px;height:8px"></span><span class="truncate">${esc(c.name)}</span></div><p class="pl-4 text-[11px] dim">${fmtTime(s.start)}</p></div>`; }).join('') : '<p class="text-xs dim">Free</p>'}</div>
+        </button>`;
+      }).join('')}
+    </div>
+  </section>`;
+}
+
+/* ---------- TIMETABLE ---------- */
+function viewTimetable() {
+  if (!data.classes.length) return emptyTile('Create a class first, then add it to your timetable.', 'classes', 'Go to Classes');
+  const now = new Date(), today = now.getDay();
+  const mon = new Date(now); mon.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+  const valid = data.schedule.filter(s => cls(s.classId));
+  const total = valid.reduce((m, s) => m + (toMin(s.end) - toMin(s.start)), 0);
+  return `
+    <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+      <p class="text-sm muted">${plural(valid.length, 'session')} · ${fmtDur(total)} of teaching a week. Tap a class to edit it.</p>
+      <button data-action="add-slot" class="btn btn-primary">${icon('plus')} Add class time</button>
+    </div>
+    <div class="hidden md:block">${weekGrid(today, mon, now, valid)}</div>
+    <div class="flex flex-col gap-3 md:hidden">${agenda(today, mon)}</div>`;
+}
+const dateOf = (mon, i) => { const x = new Date(mon); x.setDate(mon.getDate() + i); return x; };
+const fmtHour = m => { const h = Math.floor(m / 60) % 24; return `${((h + 11) % 12) + 1} ${h >= 12 ? 'PM' : 'AM'}`; };
+// Side-by-side lanes for classes that overlap on the same day
+function lanesFor(slots) {
+  const ends = [], out = new Map();
+  slots.forEach(s => {
+    let i = ends.findIndex(e => e <= toMin(s.start));
+    if (i < 0) { i = ends.length; ends.push(0); }
+    ends[i] = toMin(s.end); out.set(s.id, i);
+  });
+  return { lane: out, n: Math.max(1, ends.length) };
+}
+function weekGrid(today, mon, now, valid) {
+  let lo = valid.length ? Math.min(...valid.map(s => toMin(s.start))) : 9 * 60;
+  let hi = valid.length ? Math.max(...valid.map(s => toMin(s.end))) : 18 * 60;
+  lo = Math.max(0, Math.floor(lo / 60) * 60 - 60);
+  hi = Math.min(24 * 60, Math.ceil(hi / 60) * 60 + 60);
+  const H = 64, px = m => (m - lo) / 60 * H;
+  const hours = []; for (let m = lo; m <= hi; m += 60) hours.push(m);
+  const nowM = now.getHours() * 60 + now.getMinutes();
+  return `<div class="glass overflow-x-auto"><div class="tt" style="min-width:760px">
+    <div class="tt-head"><div></div>
+      ${WEEK_ORDER.map((d, i) => { const on = d === today; return `<div class="tt-day">
+        <span class="tt-num ${on ? 'on' : ''}">${dateOf(mon, i).getDate()}</span>
+        <span class="min-w-0 flex-1 truncate text-sm font-semibold ${on ? '' : 'muted'}">${SHORT[d]}</span>
+        <button data-action="add-slot" data-day="${d}" class="icon-btn sm" title="Add on ${DAYS[d]}">${icon('plus', 16)}</button>
+      </div>`; }).join('')}
+    </div>
+    <div class="tt-body" style="height:${px(hi)}px">
+      <div class="tt-times">${hours.map(m => `<span style="top:${px(m)}px">${fmtHour(m)}</span>`).join('')}</div>
+      ${WEEK_ORDER.map(d => {
+        const slots = slotsOnDay(d), L = lanesFor(slots);
+        return `<div class="tt-col ${d === today ? 'on' : ''}">
+          ${hours.map(m => `<i class="tt-line" style="top:${px(m)}px"></i>`).join('')}
+          ${slots.map(s => {
+            const c = cls(s.classId), top = px(toMin(s.start)), h = Math.max(44, px(toMin(s.end)) - top) - 3;
+            const w = 100 / L.n, left = L.lane.get(s.id) * w;
+            return `<button data-action="edit-slot" data-id="${s.id}" class="tt-block" style="${cv(c)};top:${top}px;height:${h}px;left:calc(${left.toFixed(3)}% + 4px);width:calc(${w.toFixed(3)}% - 8px)" title="${esc(c.name)} · ${fmtTime(s.start)} – ${fmtTime(s.end)}">
+              <span class="font-bold">${esc(c.name)}</span><span class="text-[11.5px]" style="opacity:.85">${fmtTime(s.start)} – ${fmtTime(s.end)}</span>
+            </button>`; }).join('')}
+          ${d === today && nowM >= lo && nowM <= hi ? `<i class="tt-now" style="top:${px(nowM)}px"></i>` : ''}
+        </div>`;
+      }).join('')}
+    </div>
+  </div></div>`;
+}
+function agenda(today, mon) {
+  return WEEK_ORDER.map((d, i) => {
+    const slots = slotsOnDay(d), on = d === today;
+    return `<section class="glass tile ${on ? 'is-today' : ''}" style="padding:14px 16px">
+      <div class="flex items-center gap-3">
+        <span class="tt-num ${on ? 'on' : ''}">${dateOf(mon, i).getDate()}</span>
+        <div class="min-w-0 flex-1"><p class="font-bold">${DAYS[d]}${on ? ' <span class="text-xs font-semibold dim">· Today</span>' : ''}</p><p class="text-xs dim">${slots.length ? plural(slots.length, 'class') : 'Free'}</p></div>
+        <button data-action="add-slot" data-day="${d}" class="icon-btn sm" title="Add on ${DAYS[d]}">${icon('plus', 17)}</button>
+      </div>
+      ${slots.length ? `<div class="mt-3 flex flex-col gap-2">${slots.map(s => { const c = cls(s.classId); return `<button data-action="edit-slot" data-id="${s.id}" class="tt-block static" style="${cv(c)}">
+        <span class="min-w-0 font-bold">${esc(c.name)}</span><span class="shrink-0 text-xs font-semibold" style="opacity:.9">${fmtTime(s.start)} – ${fmtTime(s.end)}</span>
+      </button>`; }).join('')}</div>` : ''}
+    </section>`;
+  }).join('');
+}
+
+/* ---------- CLASSES ---------- */
+function viewClasses() {
+  if (ui.classId) return classProfile(cls(ui.classId));
+  return `
+    <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+      <p class="text-sm muted">${plural(data.classes.length, 'class')} · ${plural(data.students.length, 'student')}</p>
+      <button data-action="add-class" class="btn btn-primary">${icon('plus')} New class</button>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      ${data.classes.map(classCard).join('')}
+      <button data-action="add-class" class="btn-dashed flex min-h-[200px] flex-col items-center justify-center gap-2 rounded-[28px] font-bold transition">${icon('plus', 26)}New class</button>
+    </div>`;
+}
+function classCard(c) {
+  const pr = progressOf(c.id), n = studentsOf(c.id).length, sl = slotsOf(c.id);
+  return `<button data-action="open-class" data-id="${c.id}" class="glass tile hero-c lift flex flex-col gap-4 text-left" style="${cv(c)}">
+    <span class="orb" style="width:180px;height:180px;right:-70px;top:-80px;opacity:.25"></span>
+    <div class="flex items-center gap-4">
+      ${ring(pr.pct, 64, 6, true, 15)}
+      <div class="min-w-0"><h3 class="display truncate text-2xl font-bold">${esc(c.name)}</h3><p class="text-sm muted">${plural(n, 'student')}</p></div>
+    </div>
+    <p class="flex items-center gap-2 text-sm font-semibold muted">${icon('calendar', 16)}<span class="truncate">${sl.length ? sl.map(s => `${SHORT[s.day]} ${fmtTime(s.start)}`).join(' · ') : 'No times yet'}</span></p>
+    <div class="inner py-2.5"><p class="eyebrow c">Next to teach</p><p class="mt-1 truncate text-sm font-bold">${esc(nextLabel(pr))}</p></div>
+  </button>`;
+}
+function classProfile(c) {
+  const pr = progressOf(c.id), studs = studentsOf(c.id), sl = slotsOf(c.id);
+  return `
+    <button data-action="back-classes" class="btn sm btn-ghost mb-4 -ml-2">${icon('back', 17)} All classes</button>
+    <section class="glass tile hero-c p-6 md:p-8" style="${cv(c)}">
+      <span class="orb"></span>
+      <div class="flex flex-wrap items-center gap-6">
+        ${ring(pr.pct, 96, 8, true, 22)}
+        <div class="min-w-0 flex-1">
+          <h2 class="display text-4xl font-bold md:text-5xl">${esc(c.name)}</h2>
+          <p class="mt-2 font-semibold muted">${plural(studs.length, 'student')} · ${plural(sl.length, 'session')} a week · ${pr.doneCount}/${pr.total} taught</p>
+        </div>
+        <button data-action="edit-class" data-id="${c.id}" class="btn">${icon('pencil', 17)} Edit</button>
+      </div>
+      <div class="inner mt-6"><p class="eyebrow c">Next to teach</p><p class="mt-1.5 text-lg font-bold">${esc(nextLabel(pr))}</p></div>
+      <div class="mt-5 flex flex-wrap gap-2.5">
+        ${pr.next ? `<button data-action="tick-next" data-id="${c.id}" class="btn btn-c">${icon('tick')} Mark taught</button>` : ''}
+        <button data-action="goto-homework" data-id="${c.id}" class="btn">${icon('checkbox')} Homework grid</button>
+        <button data-action="goto-curriculum" data-id="${c.id}" class="btn">${icon('book')} Checklist</button>
+      </div>
+    </section>
+    <div class="mt-4 grid gap-4 lg:grid-cols-5">
+      <section class="glass tile lg:col-span-3">
+        ${sectionHead('Students')}
+        <ul class="flex flex-col gap-1">${studs.map(s => studentRow(s, c)).join('') || '<li class="px-2 py-3 text-sm muted">No students yet. Add the first one below.</li>'}</ul>
+        <div class="hair mt-3 flex gap-2 pt-4">
+          <input id="new-student" data-enter="add-student" data-id="${c.id}" data-focus="new-student" enterkeyhint="done" autocomplete="off" placeholder="Add a student…" class="inp sm">
+          <button data-action="inline-submit" data-input="new-student" class="btn btn-c sm" style="${cv(c)}">${icon('plus', 17)}Add</button>
+        </div>
+      </section>
+      <section class="glass tile lg:col-span-2">
+        ${sectionHead('Weekly schedule', `<button data-action="edit-schedule" data-id="${c.id}" class="btn sm">${icon('pencil', 15)}Edit schedule</button>`)}
+        <div class="flex flex-col gap-2">${sl.length ? sl.map(s => `<button data-action="edit-schedule" data-id="${c.id}" class="slot flex items-center gap-3" style="${cv(c)}">
+          <span class="display grid h-11 w-12 shrink-0 place-items-center rounded-xl text-sm font-bold" style="background:color-mix(in srgb,var(--c) 22%,transparent)">${SHORT[s.day]}</span>
+          <span class="font-bold">${fmtTime(s.start)} – ${fmtTime(s.end)}</span>
+          <span class="ml-auto muted">${icon('pencil', 16)}</span>
+        </button>`).join('') : `<button data-action="edit-schedule" data-id="${c.id}" class="btn btn-dashed w-full">${icon('calendar', 17)}Set weekly schedule</button>`}</div>
+      </section>
+    </div>`;
+}
+function studentRow(s, c) {
+  const sc = studentScores(s.id, c.id), last = sc.length ? sc[sc.length - 1] : null;
+  return `<li class="row flex items-center gap-3 p-2">
+    ${avatar(s.name, c)}
+    <button data-action="edit-student" data-id="${s.id}" class="min-w-0 flex-1 text-left">
+      <span class="block truncate font-bold">${esc(s.name)}</span>
+      <span class="block truncate text-xs muted">${esc(s.contact || 'Tap to add contact info')}</span>
+    </button>
+    <span class="hidden sm:block">${sparkline(sc, c)}</span>
+    ${last !== null ? `<span class="display w-12 text-right text-lg font-bold ${scoreCls(last)}" title="Latest score">${last}%</span>` : ''}
+    <button data-action="edit-student" data-id="${s.id}" class="icon-btn sm" title="Edit student">${icon('pencil', 16)}</button>
+  </li>`;
+}
+
+/* ---------- HOMEWORK ---------- */
+function viewHomework() {
+  if (!data.classes.length) return emptyTile('Create a class first.', 'classes', 'Go to Classes');
+  const c = cls(ui.hwClassId), asg = assignmentsOf(c.id), a = asg.find(x => x.id === ui.hwAssignmentId), studs = studentsOf(c.id);
+  return `
+    ${classChips(c.id, 'hw-class')}
+    <div class="mt-3 flex flex-wrap items-center gap-2">
+      ${asg.map(x => `<button data-action="hw-assignment" data-id="${x.id}" class="chip ${x.id === a?.id ? 'on' : ''}" style="${cv(c)};height:38px">${icon(x.type === 'test' ? 'test' : 'file', 15)}${esc(x.title)}</button>`).join('')}
+      <button data-action="add-assignment" class="btn sm btn-dashed">${icon('plus', 16)} New</button>
+    </div>
+    <div class="mt-5">
+    ${!a ? emptyTile('No homework or tests for this class yet. Tap New to create one.')
+      : !studs.length ? emptyTile('This class has no students yet. Add them in Classes.', 'classes', 'Go to Classes')
+      : assignmentTable(a, c, studs)}
+    </div>
+    ${asg.length && studs.length ? matrix(c, asg, studs) : ''}`;
+}
+function assignmentTable(a, c, studs) {
+  const counts = { missing: 0, submitted: 0, graded: 0 };
+  studs.forEach(s => counts[rec(a.id, s.id).status]++);
+  const scored = studs.map(s => pctOf(rec(a.id, s.id), a)).filter(v => v !== null);
+  const avg = scored.length ? Math.round(scored.reduce((x, y) => x + y, 0) / scored.length) : null;
+  return `<section class="glass tile tint p-5 md:p-6" style="${cv(c)}">
+    <div class="flex flex-wrap items-start justify-between gap-4">
+      <div class="min-w-0">
+        <p class="eyebrow">${a.type === 'test' ? 'Practice test' : 'Homework'}${a.due ? ' · Due ' + fmtDate(a.due) : ''} · out of ${a.max}</p>
+        <h2 class="display mt-1.5 text-2xl font-bold md:text-3xl">${esc(a.title)}</h2>
+      </div>
+      <div class="flex items-center gap-2">
+        ${avg !== null ? `<div class="mr-2 text-right"><p class="eyebrow">Average</p><p class="display text-2xl font-bold ${scoreCls(avg)}">${avg}%</p></div>` : ''}
+        <button data-action="edit-assignment" data-id="${a.id}" class="icon-btn" title="Edit assignment">${icon('pencil')}</button>
+      </div>
+    </div>
+    <div class="mt-4 flex flex-wrap gap-2">${Object.keys(STATUS).map(k => `<span class="pill xs ${STATUS[k].cls}"><span class="pd"></span>${counts[k]} ${STATUS[k].label}</span>`).join('')}</div>
+    <p class="mt-4 text-xs muted">Tap a status to cycle it. Type a score and press Enter: it marks Graded and jumps to the next student.</p>
+    <ul class="mt-3 flex flex-col gap-1">
+      ${studs.map((s, i) => { const r = rec(a.id, s.id), pct = pctOf(r, a); return `<li class="row flex flex-wrap items-center gap-3 p-2.5 sm:flex-nowrap">
+        ${avatar(s.name, c)}
+        <span class="min-w-0 flex-1 truncate font-bold">${esc(s.name)}</span>
+        ${statusPill(r, a.id, s.id)}
+        <div class="flex shrink-0 items-center gap-2">
+          <input type="number" inputmode="decimal" step="any" min="0" value="${esc(r.score)}" placeholder="–" aria-label="Score for ${esc(s.name)}"
+            data-change="score" data-enter="score" data-aid="${a.id}" data-sid="${s.id}" data-idx="${i}" data-focus="score-${i}" enterkeyhint="next"
+            class="inp score" style="${cv(c)}">
+          <span class="text-sm font-bold dim">/ ${a.max}</span>
+          <span class="display w-14 text-right text-lg font-bold ${pct === null ? 'dim' : scoreCls(pct)}">${pct === null ? '' : pct + '%'}</span>
+        </div>
+      </li>`; }).join('')}
+    </ul>
+  </section>`;
+}
+function matrix(c, asg, studs) {
+  return `<section class="glass tile mt-4">
+    ${sectionHead('Progress grid · every assignment')}
+    <div class="overflow-x-auto">
+      <table class="matrix w-full text-sm">
+        <thead><tr>
+          <th class="stick pb-3 pr-3 text-left text-xs font-bold dim">Student</th>
+          ${asg.map((a, i) => `<th class="px-1 pb-3 text-center"><button data-action="hw-assignment" data-id="${a.id}" title="${esc(a.title)}" class="chip ${a.id === ui.hwAssignmentId ? 'on' : ''}" style="${cv(c)};height:32px;padding:0 10px;font-size:12px">${icon(a.type === 'test' ? 'test' : 'file', 13)}${i + 1}</button></th>`).join('')}
+          <th class="pb-3 pl-3 text-left text-xs font-bold dim">Trend</th>
+        </tr></thead>
+        <tbody>
+          ${studs.map(s => `<tr>
+            <td class="stick py-1.5 pr-3 font-bold">${esc(s.name)}</td>
+            ${asg.map(a => { const r = data.records[a.id]?.[s.id] || { status: 'missing', score: '' }, pct = pctOf(r, a); return `<td class="px-1 py-1.5 text-center"><button data-action="cycle-status" data-aid="${a.id}" data-sid="${s.id}" title="${esc(a.title)}" class="pill cell ${STATUS[r.status].cls} ${fx.pop === a.id + s.id ? 'pop' : ''}">${pct !== null ? pct + '%' : '<span class="pd"></span>'}</button></td>`; }).join('')}
+            <td class="py-1.5 pl-3">${sparkline(studentScores(s.id, c.id), c)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    <p class="mt-3 text-xs dim">Cells show the % score, or a status dot if there’s no score yet. Tap a cell to cycle its status; tap a column number to open that assignment.</p>
+  </section>`;
+}
+
+/* ---------- CURRICULUM ---------- */
+function viewCurriculum() {
+  const tabs = [['progress', 'checkbox', 'Progress'], ['syllabus', 'pencil', 'Syllabus'], ['materials', 'link', 'Materials']];
+  return `
+    <div class="tabs glass mb-5">${tabs.map(([id, ic, l]) => `<button data-action="cur-view" data-id="${id}" class="${ui.curView === id ? 'on' : ''}">${icon(ic, 17)}${l}</button>`).join('')}</div>
+    ${ui.curView === 'progress' ? curProgress() : ui.curView === 'syllabus' ? curSyllabus() : curMaterials()}`;
+}
+function curProgress() {
+  if (!data.classes.length) return emptyTile('Create a class first.', 'classes', 'Go to Classes');
+  if (!data.curriculum.length) return emptyTile('Your syllabus is empty. Add chapters in the Syllabus tab.');
+  const c = cls(ui.curClassId), pr = progressOf(c.id);
+  return `
+    ${classChips(c.id, 'cur-class')}
+    <section class="glass tile tint mt-4 p-5 md:p-6" style="${cv(c)}">
+      <span class="orb"></span>
+      <div class="flex flex-wrap items-center gap-5">
+        ${ring(pr.pct, 84, 7, true, 19)}
+        <div class="grid min-w-0 flex-1 gap-4 sm:grid-cols-2">
+          <div><p class="eyebrow">Left off at</p><p class="mt-1 font-bold">${pr.lastDone ? esc(itemLabel(pr.lastDone)) : 'Not started'}</p></div>
+          <div><p class="eyebrow c">Next to teach</p><p class="mt-1 font-bold">${esc(nextLabel(pr))}</p></div>
+        </div>
+        <button data-action="cur-view" data-id="syllabus" class="btn sm btn-ghost">${icon('pencil', 16)} Edit syllabus</button>
+      </div>
+    </section>
+    <div class="mt-4 grid gap-4 md:grid-cols-2">
+      ${data.curriculum.map(ch => {
+        const its = ch.units.length ? ch.units.map(u => ({ id: u.id, title: u.title })) : [{ id: ch.id, title: ch.title }];
+        const dn = its.filter(i => pr.done.has(i.id)).length, all = dn === its.length;
+        return `<section class="glass tile" style="${cv(c)}">
+          <div class="mb-3 flex items-center gap-3">
+            <h3 class="display min-w-0 flex-1 text-lg font-bold">${esc(ch.title)}</h3>
+            <span class="text-xs font-bold ${all ? 'c' : 'dim'}">${dn}/${its.length}</span>
+            ${ch.units.length ? `<button data-action="tick-chapter" data-id="${ch.id}" class="btn sm btn-ghost">${all ? 'Untick all' : 'Tick all'}</button>` : ''}
+          </div>
+          ${bar(Math.round(dn / its.length * 100), c)}
+          <ul class="mt-3 flex flex-col gap-1">
+            ${its.map(it => { const on = pr.done.has(it.id), isNext = pr.next && pr.next.id === it.id, mc = data.materials.filter(m => m.itemId === it.id).length; return `<li class="flex items-center gap-1">
+              <button data-action="toggle-item" data-id="${it.id}" class="item row flex min-h-[52px] min-w-0 flex-1 items-center gap-3 px-2.5 text-left" ${isNext ? 'style="background:color-mix(in srgb,var(--c) 10%,transparent)"' : ''}>
+                <span class="check ${on ? 'on' : ''} ${fx.tick === it.id ? 'fresh' : ''}">${CHECK_SVG}</span>
+                <span class="min-w-0 flex-1 text-sm ${on ? 'dim line-through' : 'font-semibold'}">${esc(it.title)}</span>
+                ${isNext ? '<span class="tag tag-c">Next</span>' : ''}
+              </button>
+              ${mc ? `<button data-action="cur-view" data-id="materials" class="btn sm btn-ghost" title="Materials">${icon('link', 15)}${mc}</button>` : ''}
+            </li>`; }).join('')}
+          </ul>
+        </section>`;
+      }).join('')}
+    </div>`;
+}
+function curSyllabus() {
+  const n = data.curriculum.length;
+  return `
+    <p class="mb-4 text-sm muted">Tap any title to rename it. Type in a box and press Enter to add; it stays ready for the next one. The pencil moves a unit to another chapter or deletes it.</p>
+    <div class="grid gap-4 lg:grid-cols-2">
+      ${data.curriculum.map((ch, ci) => `<section class="glass tile">
+        <div class="flex items-center gap-1">
+          <button data-action="inline-edit" data-kind="chapter" data-id="${ch.id}" class="row display min-w-0 flex-1 px-2 py-2 text-left text-lg font-bold" title="Tap to rename">${esc(ch.title)}</button>
+          <button data-action="move-chapter" data-id="${ch.id}" data-dir="-1" class="icon-btn sm" ${ci === 0 ? 'disabled' : ''} title="Move up">${icon('up', 17)}</button>
+          <button data-action="move-chapter" data-id="${ch.id}" data-dir="1" class="icon-btn sm" ${ci === n - 1 ? 'disabled' : ''} title="Move down">${icon('down', 17)}</button>
+          <button data-action="edit-chapter" data-id="${ch.id}" class="icon-btn sm" title="Rename or delete">${icon('pencil', 16)}</button>
+        </div>
+        <ul class="mt-2 flex flex-col gap-0.5 pl-2">
+          ${ch.units.map((u, j) => `<li class="flex items-center gap-1">
+            <button data-action="inline-edit" data-kind="unit" data-ch="${ch.id}" data-id="${u.id}" class="row min-w-0 flex-1 px-2.5 py-2.5 text-left text-sm font-semibold" title="Tap to rename">${esc(u.title)}</button>
+            <button data-action="move-unit" data-ch="${ch.id}" data-id="${u.id}" data-dir="-1" class="icon-btn sm" ${j === 0 ? 'disabled' : ''}>${icon('up', 16)}</button>
+            <button data-action="move-unit" data-ch="${ch.id}" data-id="${u.id}" data-dir="1" class="icon-btn sm" ${j === ch.units.length - 1 ? 'disabled' : ''}>${icon('down', 16)}</button>
+            <button data-action="edit-unit" data-ch="${ch.id}" data-id="${u.id}" class="icon-btn sm">${icon('pencil', 15)}</button>
+          </li>`).join('')}
+        </ul>
+        <div class="hair mt-3 flex gap-2 pt-3">
+          <input id="unit-${ch.id}" data-enter="add-unit" data-id="${ch.id}" data-focus="unit-${ch.id}" enterkeyhint="done" autocomplete="off" placeholder="Add unit, e.g. Unit 5 · Polynomials" class="inp sm">
+          <button data-action="inline-submit" data-input="unit-${ch.id}" class="btn sm">${icon('plus', 16)}Add</button>
+        </div>
+      </section>`).join('')}
+      <section class="glass tile flex flex-col justify-center gap-3" style="border-style:dashed;border-color:var(--line-2)">
+        <p class="eyebrow">New chapter</p>
+        <div class="flex gap-2">
+          <input id="new-chapter" data-enter="add-chapter" data-focus="new-chapter" enterkeyhint="done" autocomplete="off" placeholder="e.g. Chapter 5 · Practice Tests" class="inp">
+          <button data-action="inline-submit" data-input="new-chapter" class="btn btn-primary">${icon('plus')}Add</button>
+        </div>
+      </section>
+    </div>`;
+}
+function curMaterials() {
+  if (!data.curriculum.length) return emptyTile('Add chapters in Syllabus first. Materials are organised by chapter and unit.');
+  return `
+    <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+      <p class="text-sm muted">Google Drive (or any) links to exercises and tests, filed by chapter and unit.</p>
+      <button data-action="add-material" class="btn btn-primary">${icon('plus')} Add link</button>
+    </div>
+    <div class="flex flex-col gap-3">
+      ${data.curriculum.map(ch => {
+        const groups = [{ id: ch.id, title: 'Whole chapter', isCh: true }, ...ch.units.map(u => ({ id: u.id, title: u.title }))];
+        const total = groups.reduce((n, g) => n + data.materials.filter(m => m.itemId === g.id).length, 0);
+        return `<details class="glass tile group p-0" ${total ? 'open' : ''}>
+          <summary class="flex cursor-pointer list-none items-center gap-3 p-5">
+            <span class="display min-w-0 flex-1 text-lg font-bold">${esc(ch.title)}</span>
+            <span class="pill xs" style="--s:var(--accent)">${icon('link', 13)}${total}</span>
+            <span class="muted transition group-open:rotate-180">${icon('down', 18)}</span>
+          </summary>
+          <div class="hair grid gap-4 p-5 md:grid-cols-2">
+            ${groups.map(g => { const ms = data.materials.filter(m => m.itemId === g.id); if (g.isCh && !ms.length && ch.units.length) return ''; return `<div>
+              <div class="mb-2 flex items-center justify-between gap-2">
+                <p class="truncate text-sm font-bold ${g.isCh ? 'muted' : ''}">${esc(g.title)}</p>
+                <button data-action="add-material" data-item="${g.id}" class="btn sm btn-ghost">${icon('plus', 15)}Link</button>
+              </div>
+              ${ms.length ? `<ul class="flex flex-col gap-1.5">${ms.map(matRow).join('')}</ul>` : '<p class="text-xs dim">No links yet</p>'}
+            </div>`; }).join('')}
+          </div>
+        </details>`;
+      }).join('')}
+    </div>`;
+}
+const matRow = m => `<li class="row flex items-center gap-2 p-1.5 pl-3" style="background:rgba(255,255,255,.035)">
+  <span class="muted">${icon(MAT[m.kind]?.icon || 'link', 16)}</span>
+  <a href="${esc(m.url)}" target="_blank" rel="noopener" class="min-w-0 flex-1 truncate py-2 text-sm font-semibold hover:underline">${esc(m.title)}</a>
+  <button data-action="copy-link" data-id="${m.id}" class="icon-btn sm" title="Copy link">${icon('copy', 16)}</button>
+  <button data-action="edit-material" data-id="${m.id}" class="icon-btn sm" title="Edit">${icon('pencil', 15)}</button>
+</li>`;
+
+const VIEWS = { today: viewToday, timetable: viewTimetable, classes: viewClasses, homework: viewHomework, curriculum: viewCurriculum };
+
+/* =====================================================================
+   MODALS
+   ===================================================================== */
+let modalDanger = null;
+function openModal({ title, body, submitLabel = 'Save', onSubmit, danger }) {
+  document.getElementById('modal-root').innerHTML = `
+    <div id="modal-backdrop" class="scrim">
+      <form id="modal-form" class="sheet" autocomplete="off" novalidate>
+        <div class="mb-5 flex items-center justify-between gap-3">
+          <h3 class="display text-xl font-bold">${title}</h3>
+          <button type="button" data-action="close-modal" class="icon-btn" aria-label="Close">${icon('x', 20)}</button>
+        </div>
+        <div class="flex flex-col gap-5">${body}</div>
+        <div class="mt-7 flex gap-2">
+          ${danger ? `<button type="button" data-action="modal-danger" class="btn btn-danger">${danger.label}</button>` : ''}
+          <button type="submit" class="btn btn-primary lg ml-auto flex-1 sm:flex-none">${submitLabel}</button>
+        </div>
+      </form>
+    </div>`;
+  modalDanger = danger ? danger.onClick : null;
+  const form = document.getElementById('modal-form');
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const fd = Object.fromEntries(new FormData(form));
+    if (onSubmit(fd) !== false) closeModal();
+  });
+  document.getElementById('modal-backdrop').addEventListener('click', e => { if (e.target.id === 'modal-backdrop') closeModal(); });
+  const first = form.querySelector('input[type=text]');
+  if (first && window.matchMedia('(pointer: fine)').matches) setTimeout(() => first.focus(), 60);
+}
+function closeModal() { document.getElementById('modal-root').innerHTML = ''; modalDanger = null; }
+
+const textInput = (name, value, placeholder = '', extra = '') =>
+  `<input type="text" name="${name}" value="${esc(value)}" placeholder="${esc(placeholder)}" class="inp" ${extra}>`;
+const radios = (name, list, sel, cls = '') => `<div class="seg ${cls}">${list.map(([v, l, style]) =>
+  `<label ${style ? `style="${style}"` : ''}><input type="radio" name="${name}" value="${esc(v)}" ${String(v) === String(sel) ? 'checked' : ''}><span>${l}</span></label>`).join('')}</div>`;
+const classRadios = sel => radios('classId', data.classes.map(c => [c.id, `<i class="dot" style="width:8px;height:8px"></i>${esc(c.name)}`, cv(c)]), sel);
+
+function nextColor() {
+  const used = data.classes.map(c => c.color);
+  return Object.keys(PALETTE).find(k => !used.includes(k)) || Object.keys(PALETTE)[data.classes.length % 8];
+}
+
+function classModal(c) {
+  const isNew = !c, sel = c?.color || nextColor();
+  openModal({
+    title: isNew ? 'New class' : 'Edit class',
+    body: field('Class name', textInput('name', c?.name || '', 'e.g. 800 Wine')) +
+      field('Colour', radios('color', Object.keys(PALETTE).map(k => [k, '', `--c:${PALETTE[k]}`]), sel, 'swatches')),
+    submitLabel: isNew ? 'Create class' : 'Save',
+    danger: isNew ? null : { label: 'Delete', onClick: async () => {
+      if (!(await askConfirm(`Delete “${esc(c.name)}”? Its students, schedule and homework go too.`))) return false;
+      deleteClass(c.id); commit(); toast('Class deleted');
+    } },
+    onSubmit: f => {
+      const name = (f.name || '').trim();
+      if (!name) { toast('Give the class a name'); return false; }
+      if (isNew) {
+        const id = uid(); data.classes.push({ id, name, color: f.color || sel }); ui.tab = 'classes'; ui.classId = id;
+        commit(); toast('Class created. Now pick its days.');
+        setTimeout(() => scheduleModal(cls(id)), 0); // straight into setting its weekly schedule
+        return;
+      }
+      c.name = name; c.color = f.color || c.color;
+      commit(); toast('Saved');
+    },
+  });
+}
+function deleteClass(id) {
+  data.classes = data.classes.filter(c => c.id !== id);
+  data.students = data.students.filter(s => s.classId !== id);
+  data.schedule = data.schedule.filter(s => s.classId !== id);
+  data.assignments.filter(a => a.classId === id).forEach(a => delete data.records[a.id]);
+  data.assignments = data.assignments.filter(a => a.classId !== id);
+  delete data.progress[id];
+  if (ui.classId === id) ui.classId = null;
+}
+
+function slotModal(s, preset = {}) {
+  if (!data.classes.length) { toast('Create a class first'); return; }
+  const isNew = !s;
+  let v = s;
+  if (isNew) {
+    const classId = preset.classId || ui.classId || data.classes[0].id;
+    const prev = slotsOf(classId)[0];
+    v = { classId, day: preset.day ?? new Date().getDay(), start: prev?.start || '16:00', end: prev?.end || '17:30' };
+  }
+  openModal({
+    title: isNew ? 'Add class time' : 'Edit class time',
+    body: (isNew ? '' : `<button type="button" data-action="edit-schedule" data-id="${v.classId}" class="btn btn-c w-full" style="${cv(cls(v.classId))}">${icon('calendar', 17)}Edit all of ${esc(cls(v.classId).name)}’s weekly schedule</button>`) +
+      field('Class', classRadios(v.classId)) +
+      field('Day', radios('day', WEEK_ORDER.map(d => [d, SHORT[d]]), v.day, 'days')) +
+      `<div class="grid grid-cols-2 gap-3">
+        ${field('Start', `<input type="time" name="start" value="${v.start}" class="inp">`)}
+        ${field('End', `<input type="time" name="end" value="${v.end}" class="inp">`)}
+      </div>`,
+    submitLabel: isNew ? 'Add to timetable' : 'Save',
+    danger: isNew ? null : { label: 'Delete', onClick: () => { data.schedule = data.schedule.filter(x => x.id !== s.id); commit(); toast('Removed from timetable'); } },
+    onSubmit: f => {
+      if (!f.start || !f.end) { toast('Pick a start and end time'); return false; }
+      if (toMin(f.end) <= toMin(f.start)) { toast('End time must be after start time'); return false; }
+      const vals = { classId: f.classId || v.classId, day: Number(f.day ?? v.day), start: f.start, end: f.end };
+      if (isNew) data.schedule.push({ id: uid(), ...vals }); else Object.assign(s, vals);
+      commit(); toast(isNew ? 'Added to timetable' : 'Saved');
+    },
+  });
+}
+
+/* Whole-week schedule editor for one class: tap days on/off, set times, save once */
+let sched = null;
+function scheduleModal(c) {
+  sched = { classId: c.id, rows: slotsOf(c.id).map(s => ({ ...s })) };
+  openModal({
+    title: `Weekly schedule · ${esc(c.name)}`,
+    body: `<div id="sched-body" class="flex flex-col gap-5" style="${cv(c)}">${schedBody()}</div>`,
+    submitLabel: 'Save schedule',
+    onSubmit: () => {
+      for (const r of sched.rows) {
+        if (!r.start || !r.end || toMin(r.end) <= toMin(r.start)) { toast(`${DAYS[r.day]}: end time must be after start`); return false; }
+      }
+      data.schedule = data.schedule.filter(s => s.classId !== sched.classId)
+        .concat(sched.rows.map(r => ({ id: r.id || uid(), classId: sched.classId, day: r.day, start: r.start, end: r.end })));
+      sched = null; commit(); toast('Schedule saved');
+    },
+  });
+}
+function schedBody() {
+  sched.rows.sort(slotSort);
+  const active = new Set(sched.rows.map(r => r.day));
+  return `
+    <div>
+      <span class="label">Days it meets</span>
+      <div class="seg days">${WEEK_ORDER.map(d => `<label><input type="checkbox" data-action="sched-day" data-day="${d}" ${active.has(d) ? 'checked' : ''}><span>${SHORT[d]}</span></label>`).join('')}</div>
+    </div>
+    <div>
+      <div class="mb-2 flex items-center justify-between gap-2">
+        <span class="label" style="margin:0">Times</span>
+        ${sched.rows.length > 1 ? `<button type="button" data-action="sched-copy" class="btn sm btn-ghost">Use first time for all</button>` : ''}
+      </div>
+      ${sched.rows.length ? `<div class="flex flex-col gap-2">${sched.rows.map((r, i) => `<div class="flex items-center gap-2">
+        <span class="tag tag-c" style="width:46px;justify-content:center">${SHORT[r.day]}</span>
+        <input type="time" class="inp sm min-w-0 flex-1" value="${r.start}" data-sched="${i}" data-field="start" aria-label="${DAYS[r.day]} start">
+        <span class="dim">–</span>
+        <input type="time" class="inp sm min-w-0 flex-1" value="${r.end}" data-sched="${i}" data-field="end" aria-label="${DAYS[r.day]} end">
+        <button type="button" data-action="sched-remove" data-idx="${i}" class="icon-btn sm" title="Remove ${DAYS[r.day]}">${icon('x', 16)}</button>
+      </div>`).join('')}</div>` : '<p class="text-sm muted">Tap the days this class meets.</p>'}
+    </div>`;
+}
+const refreshSched = () => { const el = document.getElementById('sched-body'); if (el && sched) el.innerHTML = schedBody(); };
+
+function studentModal(s) {
+  openModal({
+    title: 'Edit student',
+    body: field('Name', textInput('name', s.name)) +
+      field('Contact / notes', textInput('contact', s.contact || '', 'Phone, Viber, Telegram, parent…')) +
+      field('Class', classRadios(s.classId)),
+    danger: { label: 'Remove', onClick: async () => {
+      if (!(await askConfirm(`Remove ${esc(s.name)}? Their homework records will be deleted.`, { ok: 'Remove' }))) return false;
+      data.students = data.students.filter(x => x.id !== s.id);
+      Object.values(data.records).forEach(r => delete r[s.id]);
+      commit(); toast('Student removed');
+    } },
+    onSubmit: f => {
+      const name = (f.name || '').trim();
+      if (!name) { toast('Name can’t be empty'); return false; }
+      Object.assign(s, { name, contact: (f.contact || '').trim(), classId: f.classId || s.classId });
+      commit(); toast('Saved');
+    },
+  });
+}
+
+function assignmentModal(a) {
+  const isNew = !a;
+  let suggested = '';
+  if (isNew) {
+    const pr = progressOf(ui.hwClassId);
+    if (pr.lastDone) suggested = (pr.lastDone.unit ? `${pr.lastDone.chapter.title.split('·')[0].trim()} · ${pr.lastDone.unit.title.split('·')[0].trim()}` : pr.lastDone.chapter.title.split('·')[0].trim()) + ' HW';
+  }
+  const v = a || { title: suggested, type: 'homework', max: 20, due: ymd(new Date()) };
+  openModal({
+    title: isNew ? `New assignment · ${esc(cls(ui.hwClassId).name)}` : 'Edit assignment',
+    body: field('Title', textInput('title', v.title, 'e.g. Ch2 · Unit 3 HW')) +
+      field('Type', radios('type', [['homework', `${icon('file', 16)}Homework`], ['test', `${icon('test', 16)}Practice test`]], v.type)) +
+      `<div class="grid grid-cols-2 gap-3">
+        ${field('Out of', `<input type="number" inputmode="numeric" name="max" min="1" value="${esc(v.max)}" class="inp">`)}
+        ${field('Due date', `<input type="date" name="due" value="${esc(v.due || '')}" class="inp">`)}
+      </div>` +
+      (isNew ? '' : field('Class', classRadios(a.classId))),
+    submitLabel: isNew ? 'Create' : 'Save',
+    danger: isNew ? null : { label: 'Delete', onClick: async () => {
+      if (!(await askConfirm(`Delete “${esc(a.title)}” and all its scores?`))) return false;
+      data.assignments = data.assignments.filter(x => x.id !== a.id); delete data.records[a.id];
+      commit(); toast('Assignment deleted');
+    } },
+    onSubmit: f => {
+      const title = (f.title || '').trim();
+      if (!title) { toast('Give it a title'); return false; }
+      const vals = { title, type: f.type || 'homework', max: Math.max(1, Number(f.max) || 1), due: f.due || '' };
+      if (isNew) { const id = uid(); data.assignments.push({ id, classId: ui.hwClassId, createdAt: Date.now(), ...vals }); ui.hwAssignmentId = id; }
+      else {
+        Object.assign(a, vals);
+        if (f.classId && f.classId !== a.classId) { a.classId = f.classId; ui.hwClassId = f.classId; ui.hwAssignmentId = a.id; }
+      }
+      commit(); toast(isNew ? 'Created. Everyone starts as Missing.' : 'Saved');
+    },
+  });
+}
+
+function removeItemIds(ids) {
+  Object.keys(data.progress).forEach(k => { data.progress[k] = data.progress[k].filter(x => !ids.includes(x)); });
+  data.materials = data.materials.filter(m => !ids.includes(m.itemId));
+}
+function chapterModal(ch) {
+  openModal({
+    title: 'Edit chapter',
+    body: field('Chapter title', textInput('title', ch.title)),
+    danger: { label: 'Delete', onClick: async () => {
+      if (!(await askConfirm(`Delete “${esc(ch.title)}” and its ${plural(ch.units.length, 'unit')}? Its ticks and links go too.`))) return false;
+      removeItemIds([ch.id, ...ch.units.map(u => u.id)]);
+      data.curriculum = data.curriculum.filter(x => x.id !== ch.id);
+      commit(); toast('Chapter deleted');
+    } },
+    onSubmit: f => { const t = (f.title || '').trim(); if (!t) return false; ch.title = t; commit(); },
+  });
+}
+function unitModal(ch, u) {
+  openModal({
+    title: 'Edit unit',
+    body: field('Unit title', textInput('title', u.title)) +
+      field('Chapter', `<select name="chId" class="inp">${opts(data.curriculum.map(x => [x.id, x.title]), ch.id)}</select>`),
+    danger: { label: 'Delete', onClick: async () => {
+      if (!(await askConfirm(`Delete “${esc(u.title)}”?`))) return false;
+      removeItemIds([u.id]); ch.units = ch.units.filter(x => x.id !== u.id);
+      commit(); toast('Unit deleted');
+    } },
+    onSubmit: f => {
+      const t = (f.title || '').trim(); if (!t) return false;
+      u.title = t;
+      if (f.chId && f.chId !== ch.id) {
+        ch.units = ch.units.filter(x => x.id !== u.id);
+        const dest = data.curriculum.find(x => x.id === f.chId);
+        dest.units.push(u); toast('Moved to ' + dest.title);
+      }
+      commit();
+    },
+  });
+}
+function materialModal(m, presetItem) {
+  if (!data.curriculum.length) { toast('Add a chapter in Syllabus first'); return; }
+  const isNew = !m, targets = [];
+  data.curriculum.forEach(ch => { targets.push([ch.id, ch.title]); ch.units.forEach(u => targets.push([u.id, '   ↳ ' + u.title])); });
+  openModal({
+    title: isNew ? 'Add material link' : 'Edit link',
+    body: field('Attach to', `<select name="itemId" class="inp">${opts(targets, m?.itemId || presetItem || targets[0][0])}</select>`) +
+      field('Title', textInput('title', m?.title || '', 'e.g. Unit 2 exercises')) +
+      field('Link (Google Drive etc.)', textInput('url', m?.url || '', 'https://drive.google.com/…', 'inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false"')) +
+      field('Type', radios('kind', Object.entries(MAT).map(([k, x]) => [k, `${icon(x.icon, 16)}${x.label}`]), m?.kind || 'exercise')),
+    submitLabel: isNew ? 'Save link' : 'Save',
+    danger: isNew ? null : { label: 'Delete', onClick: () => { data.materials = data.materials.filter(x => x.id !== m.id); commit(); toast('Link deleted'); } },
+    onSubmit: f => {
+      let url = (f.url || '').trim();
+      if (!url) { toast('Paste a link'); return false; }
+      if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+      const vals = { itemId: f.itemId, title: (f.title || '').trim() || 'Untitled link', url, kind: f.kind || 'exercise' };
+      if (isNew) data.materials.push({ id: uid(), ...vals }); else Object.assign(m, vals);
+      commit(); toast(isNew ? 'Link saved' : 'Saved');
+    },
+  });
+}
+
+/* =====================================================================
+   ACTIONS & EVENTS
+   ===================================================================== */
+function move(arr, id, dir) {
+  const i = arr.findIndex(x => x.id === id), j = i + dir;
+  if (i < 0 || j < 0 || j >= arr.length) return;
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+}
+const goTop = () => window.scrollTo({ top: 0 });
+
+async function exportData() {
+  const filename = `sat-math-hq-backup-${ymd(new Date())}.json`;
+  const json = JSON.stringify({ ...data, lastExport: Date.now() }, null, 2);
+  if (inArtifact()) {
+    const dl = await window.claude.use('downloads');
+    if (!dl) { toast('Saving files isn’t available in this view'); return; }
+    try { await dl.save({ filename, data: json }); }
+    catch (e) { if (e?.code !== 'declined') toast('Couldn’t save the backup. Try again in a moment.'); return; }
+  } else {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+    a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+  }
+  data.lastExport = Date.now(); save(); render(); toast('Backup saved');
+}
+
+const ACTIONS = {
+  nav: d => { if (d.tab === 'classes' && ui.tab === 'classes') ui.classId = null; ui.tab = d.tab; render(); goTop(); },
+  export: () => exportData(),
+  theme: () => {
+    mode = mode === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.mode = mode;
+    try { localStorage.setItem(MODE_KEY, mode); } catch (e) {}
+    render();
+  },
+  import: () => document.getElementById('import-file').click(),
+  erase: async () => {
+    if (!(await askConfirm('Erase ALL classes, students, scores and syllabus? This can’t be undone. Export a backup first if you might need it.', { ok: 'Erase everything' }))) return;
+    data = normalize({}); ui.classId = null; commit(); toast('All data erased');
+  },
+
+  'add-class': () => classModal(),
+  'edit-class': d => classModal(cls(d.id)),
+  'open-class': d => { ui.tab = 'classes'; ui.classId = d.id; render(); goTop(); },
+  'back-classes': () => { ui.classId = null; render(); },
+  'edit-student': d => studentModal(data.students.find(s => s.id === d.id)),
+
+  'add-slot': d => slotModal(null, { day: d.day !== undefined ? Number(d.day) : undefined, classId: d.class }),
+  'edit-slot': d => slotModal(data.schedule.find(s => s.id === d.id)),
+  'edit-schedule': d => scheduleModal(cls(d.id)),
+  'sched-day': d => {
+    if (!sched) return;
+    const day = Number(d.day);
+    if (sched.rows.some(r => r.day === day)) sched.rows = sched.rows.filter(r => r.day !== day);
+    else { const t = sched.rows[0] || { start: '16:00', end: '17:30' }; sched.rows.push({ day, start: t.start, end: t.end }); }
+    refreshSched();
+  },
+  'sched-copy': () => {
+    if (!sched?.rows.length) return;
+    const f = sched.rows[0];
+    sched.rows.forEach(r => { r.start = f.start; r.end = f.end; });
+    refreshSched(); toast(`All days set to ${fmtTime(f.start)} – ${fmtTime(f.end)}`);
+  },
+  'sched-remove': d => { if (!sched) return; sched.rows.splice(Number(d.idx), 1); refreshSched(); },
+
+  'tick-next': d => {
+    const pr = progressOf(d.id); if (!pr.next) return;
+    (data.progress[d.id] ??= []).push(pr.next.id);
+    fx.tick = pr.next.id;
+    commit(); toast('Taught: ' + itemLabel(pr.next));
+  },
+  'toggle-item': d => {
+    const arr = (data.progress[ui.curClassId] ??= []), i = arr.indexOf(d.id);
+    if (i >= 0) arr.splice(i, 1); else { arr.push(d.id); fx.tick = d.id; }
+    commit();
+  },
+  'tick-chapter': d => {
+    const ch = data.curriculum.find(c => c.id === d.id), arr = data.progress[ui.curClassId] || [];
+    const ids = ch.units.map(u => u.id), all = ids.every(id => arr.includes(id));
+    data.progress[ui.curClassId] = all ? arr.filter(x => !ids.includes(x)) : [...new Set([...arr, ...ids])];
+    commit();
+  },
+
+  'goto-homework': d => { ui.tab = 'homework'; ui.hwClassId = d.id; ui.hwAssignmentId = d.aid || null; render(); goTop(); },
+  'goto-curriculum': d => { ui.tab = 'curriculum'; ui.curView = 'progress'; ui.curClassId = d.id; render(); goTop(); },
+  'hw-class': d => { ui.hwClassId = d.id; ui.hwAssignmentId = null; render(); },
+  'hw-assignment': d => { ui.hwAssignmentId = d.id; render(); },
+  'add-assignment': () => assignmentModal(),
+  'edit-assignment': d => assignmentModal(data.assignments.find(a => a.id === d.id)),
+  'cycle-status': d => { const r = rec(d.aid, d.sid); r.status = NEXT_STATUS[r.status]; fx.pop = d.aid + d.sid; commit(); },
+  'mark-graded': d => { rec(d.aid, d.sid).status = 'graded'; commit(); toast('Marked graded'); },
+
+  'cur-view': d => { ui.curView = d.id; render(); },
+  'cur-class': d => { ui.curClassId = d.id; render(); },
+  'move-chapter': d => { move(data.curriculum, d.id, Number(d.dir)); commit(); },
+  'move-unit': d => { move(data.curriculum.find(c => c.id === d.ch).units, d.id, Number(d.dir)); commit(); },
+  'edit-chapter': d => chapterModal(data.curriculum.find(c => c.id === d.id)),
+  'edit-unit': d => { const ch = data.curriculum.find(c => c.id === d.ch); unitModal(ch, ch.units.find(u => u.id === d.id)); },
+  'inline-edit': (d, el) => {
+    const ch = data.curriculum.find(c => c.id === (d.kind === 'chapter' ? d.id : d.ch));
+    const target = d.kind === 'chapter' ? ch : ch?.units.find(u => u.id === d.id);
+    if (!target) return;
+    const input = document.createElement('input');
+    input.type = 'text'; input.value = target.title; input.setAttribute('enterkeyhint', 'done');
+    input.className = `inp sm min-w-0 flex-1 ${d.kind === 'chapter' ? 'display font-bold' : ''}`;
+    el.replaceWith(input); input.focus(); input.select();
+    let finished = false;
+    const finish = keep => {
+      if (finished) return; finished = true;
+      const t = input.value.trim();
+      if (keep && t && t !== target.title) { target.title = t; save(); toast('Renamed'); }
+      render();
+    };
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); finish(true); }
+      else if (e.key === 'Escape') { e.stopPropagation(); finish(false); }
+    });
+    input.addEventListener('blur', () => finish(true));
+  },
+
+  'add-material': d => materialModal(null, d.item),
+  'edit-material': d => materialModal(data.materials.find(m => m.id === d.id)),
+  'copy-link': d => {
+    const m = data.materials.find(x => x.id === d.id); if (!m) return;
+    const fallback = () => openModal({
+      title: 'Copy this link',
+      body: `<input id="copy-url" type="text" readonly value="${esc(m.url)}" class="inp" onfocus="this.select()">`,
+      submitLabel: 'Done', onSubmit: () => {},
+    });
+    try { navigator.clipboard.writeText(m.url).then(() => toast('Link copied'), fallback); } catch (e) { fallback(); }
+  },
+
+  'inline-submit': d => { const el = document.getElementById(d.input); if (el) ENTER[el.dataset.enter](el); },
+  'close-modal': () => closeModal(),
+  'modal-danger': async () => { if (modalDanger && (await modalDanger()) !== false) closeModal(); },
+};
+
+function setScore(el) {
+  const r = rec(el.dataset.aid, el.dataset.sid), v = el.value.trim();
+  if (v === r.score) return false;
+  r.score = v;
+  if (v !== '') { r.status = 'graded'; fx.pop = el.dataset.aid + el.dataset.sid; }
+  return true;
+}
+const ENTER = {
+  'add-student': el => {
+    const name = el.value.trim(); if (!name) return;
+    data.students.push({ id: uid(), name, classId: el.dataset.id, contact: '' });
+    pendingFocus = 'new-student'; commit(); toast('Added ' + name);
+  },
+  'add-chapter': el => {
+    const t = el.value.trim(); if (!t) return;
+    data.curriculum.push({ id: uid(), title: t, units: [] });
+    pendingFocus = 'new-chapter'; commit();
+  },
+  'add-unit': el => {
+    const t = el.value.trim(); if (!t) return;
+    data.curriculum.find(c => c.id === el.dataset.id).units.push({ id: uid(), title: t });
+    pendingFocus = 'unit-' + el.dataset.id; commit();
+  },
+  score: el => { setScore(el); pendingFocus = 'score-' + (Number(el.dataset.idx) + 1); commit(); },
+  qscore: el => {
+    if (el.value.trim() === '') return;
+    const s = data.students.find(x => x.id === el.dataset.sid);
+    setScore(el); pendingFocus = 'q-' + el.dataset.idx; // the next student slides into this slot
+    commit(); toast(`Graded ${s ? s.name : ''}: ${el.value.trim()}`);
+  },
+};
+const CHANGE = { score: el => { if (setScore(el)) commit(); } };
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const fn = ACTIONS[el.dataset.action];
+  if (fn) fn(el.dataset, el, e);
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { const no = document.getElementById('cf-no'); if (no) no.click(); else closeModal(); return; }
+  if (e.key !== 'Enter') return;
+  const el = e.target.closest && e.target.closest('[data-enter]');
+  if (!el) return;
+  e.preventDefault();
+  ENTER[el.dataset.enter](el);
+});
+document.addEventListener('input', e => {
+  const el = e.target.closest && e.target.closest('[data-sched]');
+  if (el && sched) sched.rows[Number(el.dataset.sched)][el.dataset.field] = el.value;
+});
+document.addEventListener('change', e => {
+  const el = e.target.closest && e.target.closest('[data-change]');
+  if (el) CHANGE[el.dataset.change](el);
+});
+
+document.getElementById('import-file').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async () => {
+    e.target.value = '';
+    let obj;
+    try {
+      obj = JSON.parse(reader.result);
+      if (!obj || !Array.isArray(obj.classes) || !Array.isArray(obj.curriculum)) throw new Error('bad file');
+    } catch (err) { toast('That file isn’t a SAT Math HQ backup'); return; }
+    if (!(await askConfirm('Replace ALL current data with this backup?', { ok: 'Replace data' }))) return;
+    data = normalize(obj); ui.classId = null; commit(); toast('Backup imported');
+  };
+  reader.readAsText(file);
+});
+
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// Keep "Live / Up next" fresh without interrupting typing or open dialogs
+const idle = () => !document.getElementById('modal-root').children.length && !document.getElementById('confirm-root').children.length && !['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement?.tagName);
+setInterval(() => { if (ui.tab === 'today' && idle()) render(); }, 60000);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && cloud.timer) pushNow();
+  if (!document.hidden && idle()) render();
+});
+
+render();
+cloudInit();
+</script>
+
+</body>
+</html>
